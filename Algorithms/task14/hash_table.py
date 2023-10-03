@@ -19,6 +19,9 @@ if __name__ == "__main__":
     hashed = hash_table(inputs, alphabet)
 
     with open("output.txt", "a") as output_file:  # открываем (или создаём, если его нет) файл для вывода таблицы в режиме добавления
+        j = 1
         for i in range(0, len(hashed)):
-            output_file.write(f"{i} {alphabet[i]} | {hashed[i]}\n")
-            output_file.write("----------------------------------------------------\n")
+            if hashed[i]:
+                output_file.write(f"{j} {alphabet[i]} | {hashed[i]}\n")
+                output_file.write("----------------------------------------------------\n")
+                j += 1
