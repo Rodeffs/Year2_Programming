@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
-project(practice2)
+project(lesson3)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(practice2 main.cpp ComplexNumber.h)
+add_executable(lesson3 main.cpp ComplexNumber.h ComplexNumber.cpp
