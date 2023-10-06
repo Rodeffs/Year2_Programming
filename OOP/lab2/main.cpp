@@ -1,11 +1,23 @@
-/* Задание, орфография от автора:
+#include "Array3D.h"
+#include <iostream>
 
-Создаем класс шаблонный Arry3d<> который хранит одномерный массив, гно авдыает наружу его как трезхмерные. Переопрделеить операти=оры индексации [][][], <<
-Сдлать методы GetValue0(int i) ->[][] GeValue1(int j) ->[][]  GetValues2(int k) -> [][]
-GetValues01(int i, int j) -> []
-GetValues02(int i, int k) ->[]
-GetValues12(in j, int k) -> []
-и аналогичные методы для SetValues
-Сделать статический метод CrteaeFill для создания массива и присваивания всех элементов одному значению
+int main() {
+	
 
-*/
+	Arrays::Array3D<int> array(3, 3, 3);
+
+	array.createFill(7);
+
+	int values[] = {98, 27, 13};
+
+	array.setValues01(values, 2);
+
+
+	auto output = array.getValues02(1, 2);
+
+	std::cout << output << std::endl;
+
+	delete[] output;
+
+	return 0;
+}
