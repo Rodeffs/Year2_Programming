@@ -1,5 +1,6 @@
 #include "Array3D.h"
 #include <iostream>
+#include "MultiArray.h"
 
 int main() {
 	

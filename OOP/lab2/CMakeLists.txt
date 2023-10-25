@@ -7,5 +7,5 @@ project(lab2) # write the name of the project in the brackets
 
 set(CMAKE_CXX_STANDARD 17) # setting the standard of C++, should be 17 by default
 
-add_executable(lab2 Array3D.h main.cpp templates.cpp) # all files used (including the project name) must be written in the brackets
+add_executable(lab2 Array3D.h Array3D.cpp MultiArray.h main.cpp templates.cpp) # all files used (including the project name) must be written in the brackets
 
