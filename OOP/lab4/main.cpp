@@ -49,13 +49,14 @@ int main() {
 
 	keyboard.pressKey("Enter");
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 9; i++) {
 		keyboard.pressKey("H");
 		keyboard.pressKey("E");
 		keyboard.pressKey("L");
 		keyboard.pressKey("L");
 		keyboard.pressKey("O");
 		keyboard.pressKey("!");
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
 
 	keyboard.pressKey("Enter");
@@ -73,6 +74,6 @@ int main() {
 
 	keyboard.pressKey("!");
 
-	std::cout << "\033[41;1H" << std::endl;  // чтобы моя консоль в Linux не залазила на вывод
+	std::cout << "\033[" << bottom << ";1H" << std::endl;  // чтобы моя консоль в Linux не залазила на вывод
 	return 0;
 }

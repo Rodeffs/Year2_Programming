@@ -8,16 +8,24 @@ void Keyboard::addKey(const Key& key) {
 }
 
 void Keyboard::consoleOutput(const std::string& keyName) {
+
+	if (y2 >= bottom) {  // для того, чтобы вывод справа не вылазил за нижние рамки консоли
+		x2 += 20;
+		y2 = 2;
+	}
 	
-	cout << "\033[" << y2 << ";20H| Pressed(" << keyName << ")\033[0m";
+	if (keyName == "undo")
+		cout << "\033[" << y2 << ";" << x2 << "H| undo()\033[0m";  // ANSI Escape Code
+	else
+		cout << "\033[" << y2 << ";" << x2 << "H| Pressed(" << keyName << ")\033[0m";
 	y2++;
 }
 
 void Keyboard::pressKey(const std::string& pressedKey) {
 
 	for (int i = 0; i < availableKeys.size(); i++) {
-		auto currentKey = availableKeys[i];
-		if (currentKey == pressedKey) {
+		auto currentKey = availableKeys[i];  // для этого перегружали оператор присваивания =
+		if (currentKey == pressedKey) {  // для этого перегружали оператор сравнения == 
 			switch (currentKey.getCommand()) {
 				case Command::PRINTKEY:
 					printKey(pressedKey);
@@ -30,12 +38,13 @@ void Keyboard::pressKey(const std::string& pressedKey) {
 				case Command::VOLUMEDOWN:
 					volumeDown();
 					break;
+
 				case Command::ENTER:
 					enter();
 					break;
 			}
-			consoleOutput(pressedKey);
 			log.push_back(currentKey);
+			consoleOutput(pressedKey);
 			break;
 		}
 	}
@@ -43,29 +52,29 @@ void Keyboard::pressKey(const std::string& pressedKey) {
 
 void Keyboard::printKey(const std::string& keyName) {
 
-	if (x >= 20) {  // для того, чтобы две части консоли не накладывались друг на друга 
+	if (x1 > middle - 2) {  // для того, чтобы две части консоли не накладывались друг на друга 
 		y1++;
-		x = 1;
+		x1 = 1;
 	}
 
-	cout << "\033[" << y1 << ";" << x << "H" << keyName << "\033[0m";  // ANSI Escape Code
-	x++;
-	lastLetterX = x;
+	cout << "\033[" << y1 << ";" << x1 << "H" << keyName << "\033[0m"; 
+	x1++;
+	lastLetterX = x1;
 }
 
 void Keyboard::volumeUp() {
 	
-	cout << "\033[41;1HVolume Up       \033[0m";  // здесь 40 стоит чтобы печаталось в самом низу
+	cout << "\033[" << bottom << ";1HVolume Up       \033[0m";
 }
 
 void Keyboard::volumeDown() {
 		
-	cout << "\033[41;1HVolume Down     \033[0m";
+	cout << "\033[" << bottom << ";1HVolume Down     \033[0m";
 }
 
 void Keyboard::enter() {
 
-	x = 1;
+	x1 = 1;
 	y1++;
 }
 
@@ -77,36 +86,33 @@ void Keyboard::undo() {
 
 		switch (lastKey.getCommand()) {
 			case Command::VOLUMEUP:
-				cout << "\033[41;1HVolume Up Undo  \033[0m";
+				cout << "\033[" << bottom << ";1HVolume Up Undo  \033[0m";
 				break;
 
 			case Command::VOLUMEDOWN:
-				cout << "\033[41;1HVolume Down Undo\033[0m";
+				cout << "\033[" << bottom << ";1HVolume Down Undo\033[0m";
 				break;
 
 			case Command::PRINTKEY:
-				x--;
-				if (x < 1) {
+				x1--;
+				if (x1 < 1) {
 					y1--;
-					x = 19;
+					x1 = middle - 2;
 				}
-				cout << "\033[" << y1 << ";" << x << "H" << " \033[0m";  // ANSI Escape Code
+				cout << "\033[" << y1 << ";" << x1 << "H" << " \033[0m";
 				break;
 
 			case Command::ENTER:
 				if (y1 > 2)
 					y1--;
 				if (log[log.size() - 2].getCommand() == Command::ENTER)
-					x = 1;
+					x1 = 1;
 				else  
-					x = lastLetterX;
+					x1 = lastLetterX;
 
-			// суть в том, что если до Undo enter был ещё enter, то возращаем курсор в начало строки, а если до undo enter уже шла строка, то возвращаем его в конец этой строки
+// суть в том, что если до Undo enter был ещё enter, то возращаем курсор в начало строки, а если до undo enter уже шла строка, то возвращаем его в конец этой строки
 		}
-
 		log.pop_back();
-
-		cout << "\033[" << y2 << ";20H| undo()\033[0m";
-		y2++;
+		consoleOutput("undo");
 	}
 }

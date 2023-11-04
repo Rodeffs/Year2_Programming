@@ -3,15 +3,18 @@
 #include <iostream>
 #include "Key.h"
 
+#define middle 40  // центр, между левой и правой частью
+#define bottom 41  // нижняя грань
+
 using std::vector;
 
 class Keyboard {
 
 private:
 
-	int x{1}, y1{2}, y2{2};  // первые координаты - то, что выводится в левой части консоли; вторые - в правой. Начало беру за 1, чтобы случайно не переписать что-нибудь в консоли
+	int x1{1}, x2{middle}, y1{2}, y2{2};  // первые координаты - то, что выводится в левой части консоли; вторые - в правой
 
-	int lastLetterX = x;  // костыль для правильной работы undo enter 
+	int lastLetterX = x1;  // костыль для правильной работы undo enter 
 
 	vector<Key> availableKeys;  // доступные клавиши
 
