@@ -2,40 +2,35 @@
 
 Node& BinTree::assignChildren(int begin, int end) {
 
-	int countBrackets{0}, commaIndex{0}, numberStartIndex{0}, beginIndex{0}, endIndex{0};
-	bool wasParent{false}, numberBegan{false};
+	int countBrackets{0}, commaIndex{0}, beginIndex{0}, endIndex{0}, rootValue{0};
+	bool wasParent{false}, wasMinus{false};
 
 	auto parent = new Node();
 
 	for (int i = begin; i <= end; i++) {
 		auto current = str[i];
 		
-		if (!wasParent) {  // присваиваем значение только для родительского элемента, остальным - по рекурсии в следующих итерациях
-
-			if (!numberBegan && current != ',' && current != '(' && current != ')') {
-				numberStartIndex = i;
-				numberBegan = true;
-			}
+		if (!wasParent) {  // присваиваем значение только для родительского элемента, остальным - по рекурсии в следующих итерациях 
 			
-			if (numberBegan && (current == ',' || current == '(' || current == ')')) {
-				stringstream convert;
-				convert << str.substr(numberStartIndex, i - numberStartIndex);  // здесь суть в том, что stringstream сам производит преобразования, нам лишь нужно подавать ему нужную строку, для чего как раз и находим подстроку через метож substr, где первый параметр - начальный индекс, а второй - длина этой строки
+			wasMinus = (current == '-' ? !wasMinus : wasMinus);  // если минус встретился n раз, то умножаем rootValue на (-1)^n
 
-				int val{0};
-				convert >> val;
+			if (current >= 48 && current <= 57)  // преобразование char в int, т.к. в ASCII таблице цифры 0, 1, ... , 9 имеют значения 48, 49, ... , 57
+				rootValue = rootValue * 10 + (current - 48); 
 
-				parent->setValue(val);
+			if ((current != '-' && current < 48) || current > 57 || i == end) {  // не забываем также и про случай, когда у нас задан только корневой элемент без детей
+				rootValue = (wasMinus ? -rootValue : rootValue);
+				parent->setValue(rootValue);
+				beginIndex = i + 1;
 				wasParent = true;
 			}
 		}
 		
 		else  // нам нужно лишь помнить индексы начала левого и правого элемента в строке, дабы потом по рекурсии присвоить им значения 
+			
 			switch (current) {
+				
 				case '(':
-					if (beginIndex)
-						countBrackets++;
-					else
-						beginIndex = i + 1;
+					countBrackets++;
 					break;
 
 				case ')':
@@ -53,6 +48,7 @@ Node& BinTree::assignChildren(int begin, int end) {
 	}
 
 	if (commaIndex) {  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
+		
 		if (str[commaIndex - 1] != '(')
 			parent->leftChild = &assignChildren(beginIndex, commaIndex - 1);
 
@@ -63,11 +59,11 @@ Node& BinTree::assignChildren(int begin, int end) {
 	return *parent;
 }
 
-void BinTree::removeSpaces() {  // очищаем строку от пробелов, т.к. они нам не нужны
+void BinTree::removeSpaces() {
 
 	int i = str.find(' ');
 	if (i != -1) {
-		str.erase(i);
+		str.erase(str.begin() + i);
 		removeSpaces();
 	}
 }
@@ -76,8 +72,8 @@ BinTree::BinTree(const string& binTreeInput) {
 
 	this->str = binTreeInput;
 	removeSpaces();
-	
-	root = assignChildren(0, str.size() - 1);
+
+	root = assignChildren(0, str.length() - 1);
 }
 
 Node& BinTree::getRoot() {

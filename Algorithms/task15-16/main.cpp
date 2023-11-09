@@ -3,16 +3,14 @@
 
 int main() {
 
-	cout << "Введите бинарное дерево в линейно-скобочной записи:" << endl;
+	cout << "Введите бинарное дерево в линейно-скобочной записи, т.е. в формате: родитель (левый_ребёнок, правый_ребёнок) и так далее для остальных:" << endl;
 
 	string binTreeInput;
-	// cin >> binTreeInput;
-	binTreeInput = "8 (3 (1, 6 (4,7)), 10 (, 14(13,)))";
+	
+	std::getline(cin, binTreeInput);  // для считывания всей строки ввода используется std::getline()
 
 	BinTree tree(binTreeInput);
 	auto root = tree.getRoot();
-
-	cout << "Корневой элемент: " << root.getValue() << endl; 
 
 	cout << "Прямой обход:" << endl;
 	tree.pre_ordered(&root);

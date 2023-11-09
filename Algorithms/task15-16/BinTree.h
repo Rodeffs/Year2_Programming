@@ -3,10 +3,11 @@
 #include "Node.h"
 #include <iostream>
 #include <string>
-#include <vector>
-#include <sstream>  // для преобразования типов
 
-using namespace std;
+using std::string;
+using std::cout;
+using std::cin;
+using std::endl;
 
 class BinTree {
 private:
@@ -16,7 +17,7 @@ private:
 
 	Node& assignChildren(int begin, int end);
 
-	void removeSpaces();
+	void removeSpaces();  // для очищения строки от пробелов, т.к. они нам не нужны
 
 public:
 	BinTree(const string& binTreeInput);
