@@ -20,5 +20,5 @@ if __name__ == "__main__":
     with open("output.txt", "a") as output_file:  # открываем (или создаём, если его нет) файл для вывода таблицы в режиме добавления
         for i in range(0, len(hashed)):
             if hashed[i]:
-                output_file.write(f"{i+1} {alphabet[i]} | {hashed[i]}\n")
+                output_file.write(f"{i} {alphabet[i]} | {hashed[i]}\n")
                 output_file.write("----------------------------------------------------\n")
