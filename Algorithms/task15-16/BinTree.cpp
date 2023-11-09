@@ -3,7 +3,7 @@
 Node& BinTree::assignChildren(int begin, int end) {
 
 	int countBrackets{0}, commaIndex{0}, numberStartIndex{0}, beginIndex{0}, endIndex{0};
-	bool leftIsNull{false}, rightIsNull{false}, wasParent{false}, numberBegan{false};
+	bool wasParent{false}, numberBegan{false};
 
 	auto parent = new Node();
 
@@ -32,10 +32,10 @@ Node& BinTree::assignChildren(int begin, int end) {
 		else  // нам нужно лишь помнить индексы начала левого и правого элемента в строке, дабы потом по рекурсии присвоить им значения 
 			switch (current) {
 				case '(':
-					if (!beginIndex)
-						beginIndex = i + 1;
-					else
+					if (beginIndex)
 						countBrackets++;
+					else
+						beginIndex = i + 1;
 					break;
 
 				case ')':
@@ -46,22 +46,19 @@ Node& BinTree::assignChildren(int begin, int end) {
 					break;
 
 				case ',':
-					if (!countBrackets) {
-						if (str[i-1] == '(')
-							leftIsNull = true;  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
-						else if (str[i+1] == ')')
-							rightIsNull = true;
+					if (!countBrackets)
 						commaIndex = i;
-					}
 					break;
 			}
 	}
 
-	if (!leftIsNull)
-		parent->leftChild = &assignChildren(beginIndex, commaIndex - 1);
+	if (commaIndex) {  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
+		if (str[commaIndex - 1] != '(')
+			parent->leftChild = &assignChildren(beginIndex, commaIndex - 1);
 
-	if (!rightIsNull)
-		parent->rightChild = &assignChildren(commaIndex + 1, endIndex);
+		if (str[commaIndex + 1] != ')')
+			parent->rightChild = &assignChildren(commaIndex + 1, endIndex);
+	}
 
 	return *parent;
 }
