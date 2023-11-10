@@ -1,17 +1,23 @@
 #include "BinTree.h"
 
-Node& BinTree::assignChildren(int begin, int end) {
+BinTree::BinTree(const string& binTreeInput) {
+	this->inputString = binTreeInput;
+	removeSpaces();
+	root = &assignChildren(0, inputString.length() - 1);
+}
 
+BinTree::~BinTree() {
+	delete_post_ordered(root);
+}
+
+Node& BinTree::assignChildren(int begin, int end) {
 	int countBrackets{0}, commaIndex{0}, beginIndex{0}, endIndex{0}, rootValue{0};
 	bool wasParent{false}, wasMinus{false};
-
 	auto parent = new Node();
 
 	for (int i = begin; i <= end; i++) {
-		auto current = str[i];
-		
+		auto current = inputString[i];
 		if (!wasParent) {  // присваиваем значение только для родительского элемента, остальным - по рекурсии в следующих итерациях 
-			
 			wasMinus = (current == '-' ? !wasMinus : wasMinus);  // если минус встретился n раз, то умножаем rootValue на (-1)^n
 
 			if (current >= 48 && current <= 57)  // преобразование char в int, т.к. в ASCII таблице цифры 0, 1, ... , 9 имеют значения 48, 49, ... , 57
@@ -24,11 +30,8 @@ Node& BinTree::assignChildren(int begin, int end) {
 				wasParent = true;
 			}
 		}
-		
 		else  // нам нужно лишь помнить индексы начала левого и правого элемента в строке, дабы потом по рекурсии присвоить им значения 
-			
 			switch (current) {
-				
 				case '(':
 					countBrackets++;
 					break;
@@ -48,67 +51,73 @@ Node& BinTree::assignChildren(int begin, int end) {
 	}
 
 	if (commaIndex) {  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
-		
-		if (str[commaIndex - 1] != '(')
+		if (inputString[commaIndex - 1] != '(')
 			parent->leftChild = &assignChildren(beginIndex, commaIndex - 1);
 
-		if (str[commaIndex + 1] != ')')
+		if (inputString[commaIndex + 1] != ')')
 			parent->rightChild = &assignChildren(commaIndex + 1, endIndex);
 	}
-
 	return *parent;
 }
 
 void BinTree::removeSpaces() {
-
-	int i = str.find(' ');
+	int i = inputString.find(' ');
 	if (i != -1) {
-		str.erase(str.begin() + i);
+		inputString.erase(inputString.begin() + i);
 		removeSpaces();
 	}
 }
 
-BinTree::BinTree(const string& binTreeInput) {
-
-	this->str = binTreeInput;
-	removeSpaces();
-
-	root = assignChildren(0, str.length() - 1);
-}
-
-Node& BinTree::getRoot() {
-
-	return this->root;
-}
-
-void BinTree::pre_ordered(Node* root) {
-
-	if (root == nullptr)
+void BinTree::delete_post_ordered(Node* parent) {
+	if (parent == nullptr)
 		return;
-
-	cout << root->getValue() << endl;
-	pre_ordered(root->leftChild);
-	pre_ordered(root->rightChild);
+	delete_post_ordered(parent->leftChild);
+	delete_post_ordered(parent->rightChild);
+	delete parent;
 }
 
-void BinTree::in_ordered(Node* root) {
-
-	if (root == nullptr)
+void BinTree::pre_ordered_recursive(Node* parent) {
+	if (parent == nullptr)
 		return;
-
-	in_ordered(root->leftChild);
-	cout << root->getValue() << endl;
-	in_ordered(root->rightChild);
+	returnString += std::to_string(parent->getValue());  // для преобразования int в string
+	returnString += ' ';
+	pre_ordered_recursive(parent->leftChild);
+	pre_ordered_recursive(parent->rightChild);
 }
 
-void BinTree::post_ordered(Node* root) {
-
-	if (root == nullptr)
+void BinTree::in_ordered_recursive(Node* parent) {
+	if (parent == nullptr)
 		return;
-
-	post_ordered(root->leftChild);
-	post_ordered(root->rightChild);
-	cout << root->getValue() << endl;
+	in_ordered_recursive(parent->leftChild);
+	returnString += std::to_string(parent->getValue());  // для преобразования int в string
+	returnString += ' ';
+	in_ordered_recursive(parent->rightChild);
 }
 
+void BinTree::post_ordered_recursive(Node* parent) {
+	if (parent == nullptr)
+		return;
+	post_ordered_recursive(parent->leftChild);
+	post_ordered_recursive(parent->rightChild);
+	returnString += std::to_string(parent->getValue());  // для преобразования int в string
+	returnString += ' ';
+}
+
+string& BinTree::pre_ordered() {
+	returnString.clear();
+	pre_ordered_recursive(root);
+	return returnString;
+}
+
+string& BinTree::in_ordered() {
+	returnString.clear();
+	in_ordered_recursive(root);
+	return returnString;
+}
+
+string& BinTree::post_ordered() {
+	returnString.clear();
+	post_ordered_recursive(root);
+	return returnString;
+}
 // `string& BinTree::pre_ordered_non_recursive() {}

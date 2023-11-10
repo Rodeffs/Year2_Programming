@@ -1,34 +1,40 @@
 #pragma once
 
 #include "Node.h"
-#include <iostream>
 #include <string>
 
 using std::string;
-using std::cout;
-using std::cin;
-using std::endl;
 
 class BinTree {
 private:
-	string str;
+	string inputString;
 
-	Node root;
+	string returnString;
+
+	Node* root;
 
 	Node& assignChildren(int begin, int end);
 
-	void removeSpaces();  // для очищения строки от пробелов, т.к. они нам не нужны
+	void pre_ordered_recursive(Node* parent);  // пришлось писать саму рекурсию отдельно, т.к. иначе не получается вернуть returnString, ибо его нужно каждый раз очищать от предыдущего вывода
+	
+	void in_ordered_recursive(Node* parent);
+	
+	void post_ordered_recursive(Node* parent);
+	
+	void delete_post_ordered(Node* parent);  // для деструктора (т.к. в деструктор глупо передавать параметры) 
+
+	void removeSpaces();  // для очищения строки от пробелов, т.к. они нам не нужны и будут только мешать при проверке наличия детей
 
 public:
-	BinTree(const string& binTreeInput);
+	explicit BinTree(const string& binTreeInput);
 
-	Node& getRoot();
+	~BinTree();
 
-	void pre_ordered(Node* root);  // прямой обход
+	string& pre_ordered();  // прямой обход
 
-	void in_ordered(Node* root);  // центральный обход
+	string& in_ordered();  // центральный обход
 
-	void post_ordered(Node* root); // концевой обход
+	string& post_ordered(); // концевой обход
 
 	string& pre_ordered_non_recursive();  // прямой не рекурсивный обход 
 };

@@ -9,11 +9,7 @@ public:
 
 	Node* rightChild;
 
-	Node(int val, Node* left, Node* right) : value{val}, leftChild{left}, rightChild{right} {}
-
-	Node(int val);
-
-	Node();
+	explicit Node(int val = 0, Node* left = nullptr, Node* right = nullptr) : value{val}, leftChild{left}, rightChild{right} {}
 
 	void setValue(int val);
 
