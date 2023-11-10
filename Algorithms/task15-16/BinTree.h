@@ -13,7 +13,7 @@ private:
 
 	Node* root;
 
-	Node& assignChildren(int begin, int end);
+	Node* assignChildren(int begin, int end);
 
 	void pre_ordered_recursive(Node* parent);  // пришлось писать саму рекурсию отдельно, т.к. иначе не получается вернуть returnString, ибо его нужно каждый раз очищать от предыдущего вывода
 	

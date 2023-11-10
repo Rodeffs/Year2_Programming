@@ -3,14 +3,14 @@
 BinTree::BinTree(const string& binTreeInput) {
 	this->inputString = binTreeInput;
 	removeSpaces();
-	root = &assignChildren(0, inputString.length() - 1);
+	root = assignChildren(0, inputString.length() - 1);
 }
 
 BinTree::~BinTree() {
 	delete_post_ordered(root);
 }
 
-Node& BinTree::assignChildren(int begin, int end) {
+Node* BinTree::assignChildren(int begin, int end) {
 	int countBrackets{0}, commaIndex{0}, beginIndex{0}, endIndex{0}, rootValue{0};
 	bool wasParent{false}, wasMinus{false};
 	auto parent = new Node();
@@ -52,12 +52,12 @@ Node& BinTree::assignChildren(int begin, int end) {
 
 	if (commaIndex) {  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
 		if (inputString[commaIndex - 1] != '(')
-			parent->leftChild = &assignChildren(beginIndex, commaIndex - 1);
+			parent->leftChild = assignChildren(beginIndex, commaIndex - 1);
 
 		if (inputString[commaIndex + 1] != ')')
-			parent->rightChild = &assignChildren(commaIndex + 1, endIndex);
+			parent->rightChild = assignChildren(commaIndex + 1, endIndex);
 	}
-	return *parent;
+	return parent;
 }
 
 void BinTree::removeSpaces() {
