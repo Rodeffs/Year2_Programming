@@ -6,10 +6,12 @@
 using std::string;
 
 class BinTree {
+protected:
+	Node* root;
+
 private:
 	string inputString;
 	string traverseTree;
-	Node* root;
 
 	Node* assignChildren(int begin, int end);
 
