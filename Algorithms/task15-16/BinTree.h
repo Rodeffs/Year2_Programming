@@ -8,14 +8,12 @@ using std::string;
 class BinTree {
 private:
 	string inputString;
-
-	string returnString;
-
+	string traverseTree;
 	Node* root;
 
 	Node* assignChildren(int begin, int end);
 
-	void pre_ordered_recursive(Node* parent);  // пришлось писать саму рекурсию отдельно, т.к. иначе не получается вернуть returnString, ибо его нужно каждый раз очищать от предыдущего вывода
+	void pre_ordered_recursive(Node* parent);  // пришлось писать саму рекурсию отдельно, т.к. иначе не получается вернуть traverseTree, ибо его нужно каждый раз очищать от предыдущего вывода
 	
 	void in_ordered_recursive(Node* parent);
 	

@@ -1,4 +1,5 @@
 #include "BinTree.h"
+#include <vector>
 
 BinTree::BinTree(const string& binTreeInput) {
 	this->inputString = binTreeInput;
@@ -79,8 +80,8 @@ void BinTree::delete_post_ordered(Node* parent) {
 void BinTree::pre_ordered_recursive(Node* parent) {
 	if (parent == nullptr)
 		return;
-	returnString += std::to_string(parent->getValue());  // для преобразования int в string
-	returnString += ' ';
+	traverseTree += std::to_string(parent->getValue());  // для преобразования int в string
+	traverseTree += ' ';
 	pre_ordered_recursive(parent->leftChild);
 	pre_ordered_recursive(parent->rightChild);
 }
@@ -89,8 +90,8 @@ void BinTree::in_ordered_recursive(Node* parent) {
 	if (parent == nullptr)
 		return;
 	in_ordered_recursive(parent->leftChild);
-	returnString += std::to_string(parent->getValue());  // для преобразования int в string
-	returnString += ' ';
+	traverseTree += std::to_string(parent->getValue());  // для преобразования int в string
+	traverseTree += ' ';
 	in_ordered_recursive(parent->rightChild);
 }
 
@@ -99,25 +100,45 @@ void BinTree::post_ordered_recursive(Node* parent) {
 		return;
 	post_ordered_recursive(parent->leftChild);
 	post_ordered_recursive(parent->rightChild);
-	returnString += std::to_string(parent->getValue());  // для преобразования int в string
-	returnString += ' ';
+	traverseTree += std::to_string(parent->getValue());  // для преобразования int в string
+	traverseTree += ' ';
 }
 
 string& BinTree::pre_ordered() {
-	returnString.clear();
+	traverseTree.clear();
 	pre_ordered_recursive(root);
-	return returnString;
+	return traverseTree;
 }
 
 string& BinTree::in_ordered() {
-	returnString.clear();
+	traverseTree.clear();
 	in_ordered_recursive(root);
-	return returnString;
+	return traverseTree;
 }
 
 string& BinTree::post_ordered() {
-	returnString.clear();
+	traverseTree.clear();
 	post_ordered_recursive(root);
-	return returnString;
+	return traverseTree;
 }
-// `string& BinTree::pre_ordered_non_recursive() {}
+
+string& BinTree::pre_ordered_non_recursive() {
+	traverseTree.clear();
+
+	std::vector<Node*> treeNodes;  // создаём стек, где храним ещё не пройденные элементы, т.е. это очередь элементов, по которым надо пройтись
+	treeNodes.push_back(root);  // добавляем в него корневой элемент
+
+	while (!treeNodes.empty()) {
+		auto currentNode = treeNodes.back();  // элемент в данный момент, сначала родитель, потом левый и в конце правый ребенок
+		treeNodes.pop_back();  // удаляем этот элемент из стека, чтобы не проходится по нему несколько раз
+
+		if (currentNode != nullptr) {  // проходимся по этому элементу, а затем по его детям, начиная с левого элемента, т.к. это прямой обход
+			traverseTree += std::to_string(currentNode->getValue());
+			traverseTree += ' ';
+
+			treeNodes.push_back(currentNode->rightChild);
+			treeNodes.push_back(currentNode->leftChild);
+		}
+	}
+	return traverseTree;
+}
