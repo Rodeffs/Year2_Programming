@@ -21,10 +21,10 @@ Node* BinTree::assignChildren(int begin, int end) {
 		if (!wasParent) {  // присваиваем значение только для родительского элемента, остальным - по рекурсии в следующих итерациях 
 			wasMinus = (current == '-' ? !wasMinus : wasMinus);  // если минус встретился n раз, то умножаем rootValue на (-1)^n
 
-			if (current >= 48 && current <= 57)  // преобразование char в int, т.к. в ASCII таблице цифры 0, 1, ... , 9 имеют значения 48, 49, ... , 57
-				rootValue = rootValue * 10 + (current - 48); 
+			if (current >= '0' && current <= '9')
+				rootValue = rootValue * 10 + (current - 48);   // преобразование char в int, т.к. в ASCII таблице цифры 0, 1, ... , 9 имеют значения 48, 49, ... , 57
 
-			if ((current != '-' && current < 48) || current > 57 || i == end) {  // не забываем также и про случай, когда у нас задан только корневой элемент без детей
+			if ((current != '-' && current < '0') || current > '9' || i == end) {  // не забываем также и про случай, когда у нас задан только корневой элемент без детей
 				rootValue = (wasMinus ? -rootValue : rootValue);
 				parent->setValue(rootValue);
 				beginIndex = i + 1;
@@ -50,7 +50,6 @@ Node* BinTree::assignChildren(int begin, int end) {
 					break;
 			}
 	}
-
 	if (commaIndex) {  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
 		if (inputString[commaIndex - 1] != '(')
 			parent->leftChild = assignChildren(beginIndex, commaIndex - 1);
@@ -63,10 +62,10 @@ Node* BinTree::assignChildren(int begin, int end) {
 
 void BinTree::removeSpaces() {
 	int i = inputString.find(' ');
-	if (i != -1) {
-		inputString.erase(inputString.begin() + i);
-		removeSpaces();
-	}
+	if (i == -1)
+		return;
+	inputString.erase(inputString.begin() + i);
+	removeSpaces();
 }
 
 void BinTree::delete_post_ordered(Node* parent) {
