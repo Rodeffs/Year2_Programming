@@ -3,9 +3,9 @@
 # It will build the project in the current folder. In the end type: `cmake --build .` to make it executable
 
 cmake_minimum_required(VERSION 3.26) # cmake version, without it cmake simply won't run
-project(bintree) # write the name of the project in the brackets
+project(bst) # write the name of the project in the brackets
 
 set(CMAKE_CXX_STANDARD 17) # setting the standard of C++, should be 17 by default
 
-add_executable(bintree ../task15-16/BinTree.h ../task15-16/BinTree.cpp ../task15-16/Node.h ../task15-16/Node.cpp BinSearchTree.h BinSearchTree.cpp main.cpp) # all files used (including the project name) must be written in the brackets
+add_executable(bst ../task15-16/BinTree.h ../task15-16/BinTree.cpp ../task15-16/Node.h ../task15-16/Node.cpp BinSearchTree.h BinSearchTree.cpp main.cpp) # all files used (including the project name) must be written in the brackets
 
