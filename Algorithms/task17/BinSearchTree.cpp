@@ -24,25 +24,22 @@ string BinSearchTree::printTree(Node* parent) {
 bool BinSearchTree::searchTree(int value) {
 	auto parent = root;
 
-	while (true) {
-		if (parent->getValue() == value)
-			return true;
-
+	while (parent->getValue() != value) {
 		if (parent->getValue() > value) {
-			if (parent->leftChild != nullptr)  // это нужно, т.к. цикл по какой-то причине ломается, если присвоить нулевой указатель (видимо, проверка не выполняется)
+			if (parent->leftChild != nullptr)
 				parent = parent->leftChild;
 			else
-				break;
+				return false;
 		}
 
 		if (parent->getValue() < value) {
 			if (parent->rightChild != nullptr)
 				parent = parent->rightChild;
 			else
-				break;
+				return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 void BinSearchTree::addElement(int value) {  // просто ищем подходящее место для элемента через поиск и добавляем его туда
