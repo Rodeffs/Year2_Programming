@@ -8,7 +8,7 @@ using std::string;
 
 class BinSearchTree : public BinTree {
 public:
-	explicit BinSearchTree(const string& str) : BinTree(str) {}
+	explicit BinSearchTree(const string& str) : BinTree(str) {}  // таким образом наследуем конструктор класса, чтобы не переписывать одно и то же
 
 	Node* getRoot();  // нужен для нормальной работы вывода
 

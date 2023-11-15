@@ -11,6 +11,7 @@ protected:
 
 private:
 	string inputString;
+
 	string traverseTree;
 
 	Node* assignChildren(int begin, int end);

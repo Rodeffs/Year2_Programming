@@ -10,11 +10,11 @@ string BinSearchTree::printTree(Node* parent) {
 	if (parent != nullptr) {
 		outputString.append(std::to_string(parent->getValue()));
 
-		if (parent->leftChild != nullptr || parent->rightChild != nullptr) {  // чтобы не было пустых скобок
+		if (parent->getLeft() != nullptr || parent->getRight() != nullptr) {  // чтобы не было пустых скобок
 			outputString.append(" (");
-			outputString.append(printTree(parent->leftChild));
+			outputString.append(printTree(parent->getLeft()));
 			outputString.append(", ");
-			outputString.append(printTree(parent->rightChild));
+			outputString.append(printTree(parent->getRight()));
 			outputString.append(")");
 		}
 	}
@@ -26,15 +26,15 @@ bool BinSearchTree::searchTree(int value) {
 
 	while (parent->getValue() != value) {
 		if (parent->getValue() > value) {
-			if (parent->leftChild != nullptr)
-				parent = parent->leftChild;
+			if (parent->getLeft() != nullptr)
+				parent = parent->getLeft();
 			else
 				return false;
 		}
 
 		if (parent->getValue() < value) {
-			if (parent->rightChild != nullptr)
-				parent = parent->rightChild;
+			if (parent->getRight() != nullptr)
+				parent = parent->getRight();
 			else
 				return false;
 		}
@@ -48,19 +48,19 @@ void BinSearchTree::addElement(int value) {  // просто ищем подхо
 
 	while (true) {
 		if (parent->getValue() >= value) {
-			if (parent->leftChild == nullptr) {
-				parent->leftChild = child;
+			if (parent->getLeft() == nullptr) {
+				parent->setLeft(child);
 				return;
 			}
-			parent = parent->leftChild;
+			parent = parent->getLeft();
 		}
 
 		else {
-			if (parent->rightChild == nullptr) {
-				parent->rightChild = child;
+			if (parent->getRight() == nullptr) {
+				parent->setRight(child);
 				return;
 			}
-			parent = parent->rightChild;
+			parent = parent->getRight();
 		}
 	}
 }
@@ -75,34 +75,34 @@ void BinSearchTree::removeElement(int value) {
 
 		if (element->getValue() > value) {
 			isLeft = true;
-			element = element->leftChild;
+			element = element->getLeft();
 		}
 
 		if (element->getValue() < value) {
 			isLeft = false;
-			element = element->rightChild;
+			element = element->getRight();
 		}
 	}
 
-	if (element->leftChild == nullptr && element->rightChild == nullptr) {  // самый простой случай - когда у удаляемого элемента нет детей	
+	if (element->getLeft() == nullptr && element->getRight() == nullptr) {  // самый простой случай - когда у удаляемого элемента нет детей	
 		if (parent != nullptr) {  // не забываем удалять указатель на элемент в родительском, чтобы не возникло ошибки сегментации
 			if (isLeft)
-				parent->leftChild = nullptr;
+				parent->setLeft(nullptr);
 			else
-				parent->rightChild = nullptr;
+				parent->setRight(nullptr);
 		}
 		delete element;
 	}
 
-	else if (element->leftChild == nullptr && element->rightChild != nullptr) {  // случаи, когда у элемента только один ребёнок тоже простые - нужно только поменять их местами
-		auto swap = *element->rightChild;
-		delete element->rightChild;
+	else if (element->getLeft() == nullptr && element->getRight() != nullptr) {  // случаи, когда у элемента только один ребёнок тоже простые - нужно только поменять их местами
+		auto swap = *element->getRight();
+		delete element->getRight();
 		*element = swap;
 	}
 
-	else if (element->leftChild != nullptr && element->rightChild == nullptr) {
-		auto swap = *element->leftChild;
-		delete element->leftChild;
+	else if (element->getLeft() != nullptr && element->getRight() == nullptr) {
+		auto swap = *element->getLeft();
+		delete element->getLeft();
 		*element = swap;
 	}
 
@@ -113,9 +113,9 @@ void BinSearchTree::removeElement(int value) {
 		 * 3) Удаляем найденную вершину (т.к. у неё теперь будет значение удаляемого элемента) по уже готовому алгоритму для вершины без детей
 		 */
 
-		auto minMax = element->rightChild;
-		while (minMax->leftChild != nullptr)
-			minMax = minMax->leftChild;
+		auto minMax = element->getRight();
+		while (minMax->getLeft() != nullptr)
+			minMax = minMax->getLeft();
 		
 		int swap = minMax->getValue();
 		removeElement(swap);

@@ -52,10 +52,10 @@ Node* BinTree::assignChildren(int begin, int end) {
 	}
 	if (commaIndex) {  // если нету какого-либо из ребёнков, то их даже не рассматриваем далее, т.к. по умолчанию указатель на них будет nullptr
 		if (inputString[commaIndex - 1] != '(')
-			parent->leftChild = assignChildren(beginIndex, commaIndex - 1);
+			parent->setLeft(assignChildren(beginIndex, commaIndex - 1));
 
 		if (inputString[commaIndex + 1] != ')')
-			parent->rightChild = assignChildren(commaIndex + 1, endIndex);
+			parent->setRight(assignChildren(commaIndex + 1, endIndex));
 	}
 	return parent;
 }
@@ -71,8 +71,8 @@ void BinTree::removeSpaces() {
 void BinTree::delete_post_ordered(Node* parent) {
 	if (parent == nullptr)
 		return;
-	delete_post_ordered(parent->leftChild);
-	delete_post_ordered(parent->rightChild);
+	delete_post_ordered(parent->getLeft());
+	delete_post_ordered(parent->getRight());
 	delete parent;
 }
 
@@ -81,24 +81,24 @@ void BinTree::pre_ordered_recursive(Node* parent) {
 		return;
 	traverseTree += std::to_string(parent->getValue());  // для преобразования int в string
 	traverseTree += ' ';
-	pre_ordered_recursive(parent->leftChild);
-	pre_ordered_recursive(parent->rightChild);
+	pre_ordered_recursive(parent->getLeft());
+	pre_ordered_recursive(parent->getRight());
 }
 
 void BinTree::in_ordered_recursive(Node* parent) {
 	if (parent == nullptr)
 		return;
-	in_ordered_recursive(parent->leftChild);
+	in_ordered_recursive(parent->getLeft());
 	traverseTree += std::to_string(parent->getValue());  // для преобразования int в string
 	traverseTree += ' ';
-	in_ordered_recursive(parent->rightChild);
+	in_ordered_recursive(parent->getRight());
 }
 
 void BinTree::post_ordered_recursive(Node* parent) {
 	if (parent == nullptr)
 		return;
-	post_ordered_recursive(parent->leftChild);
-	post_ordered_recursive(parent->rightChild);
+	post_ordered_recursive(parent->getLeft());
+	post_ordered_recursive(parent->getRight());
 	traverseTree += std::to_string(parent->getValue());  // для преобразования int в string
 	traverseTree += ' ';
 }
@@ -135,8 +135,8 @@ string& BinTree::pre_ordered_non_recursive() {
 			traverseTree += std::to_string(currentNode->getValue());
 			traverseTree += ' ';
 
-			treeNodes.push_back(currentNode->rightChild);
-			treeNodes.push_back(currentNode->leftChild);
+			treeNodes.push_back(currentNode->getRight());
+			treeNodes.push_back(currentNode->getLeft());
 		}
 	}
 	return traverseTree;
