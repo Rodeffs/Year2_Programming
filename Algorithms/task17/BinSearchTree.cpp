@@ -1,21 +1,5 @@
 #include "BinSearchTree.h"
 
-bool BinSearchTree::searchTree(int value) {
-	auto parent = root;
-
-	while (parent != nullptr) {
-		if (parent->getValue() == value)
-			return true;
-
-		if (parent->getValue() > value)
-			parent = parent->leftChild;
-
-		if (parent->getValue() < value)
-			parent = parent->rightChild;
-	}
-	return false;
-}
-
 Node* BinSearchTree::getRoot() {
 	return this->root;
 }
@@ -37,14 +21,37 @@ string BinSearchTree::printTree(Node* parent) {
 	return outputString;
 }
 
-void BinSearchTree::addElement(int value) {
+bool BinSearchTree::searchTree(int value) {
 	auto parent = root;
-	auto child = new Node();
+
+	while (true) {
+		if (parent->getValue() == value)
+			return true;
+
+		if (parent->getValue() > value) {
+			if (parent->leftChild != nullptr)  // это нужно, т.к. цикл по какой-то причине ломается, если присвоить нулевой указатель (видимо, проверка не выполняется)
+				parent = parent->leftChild;
+			else
+				break;
+		}
+
+		if (parent->getValue() < value) {
+			if (parent->rightChild != nullptr)
+				parent = parent->rightChild;
+			else
+				break;
+		}
+	}
+	return false;
+}
+
+void BinSearchTree::addElement(int value) {  // просто ищем подходящее место для элемента через поиск и добавляем его туда
+	auto parent = root;
+	auto child = new Node(value);
 
 	while (true) {
 		if (parent->getValue() >= value) {
 			if (parent->leftChild == nullptr) {
-				child->setValue(value);
 				parent->leftChild = child;
 				return;
 			}
@@ -53,7 +60,6 @@ void BinSearchTree::addElement(int value) {
 
 		if (parent->getValue() < value) {
 			if (parent->rightChild == nullptr) {
-				child->setValue(value);
 				parent->rightChild = child;
 				return;
 			}
@@ -64,47 +70,67 @@ void BinSearchTree::addElement(int value) {
 
 void BinSearchTree::removeElement(int value) {
 	auto element = root;
+	Node* parent = nullptr;
+	bool isLeft{false};
 
 	while (true) {  // поиск удаляемого значения
 		if (element->getValue() == value)
 			break;
 
 		if (element->getValue() > value) {
+			parent = element;	
+			isLeft = true;
 			element = element->leftChild;
 		}
 
 		if (element->getValue() < value) {
+			parent = element;	
+			isLeft = false;
 			element = element->rightChild;
 		}
 	}
 
-	if (element->leftChild == nullptr && element->rightChild == nullptr)  // самый простой случай - когда у удаляемого элемента нет детей
+	if (element->leftChild == nullptr && element->rightChild == nullptr) {  // самый простой случай - когда у удаляемого элемента нет детей	
+		if (parent != nullptr) {  // не забываем удалять указатель на элемент в родительском, чтобы не возникло ошибки сегментации
+			if (isLeft)
+				parent->leftChild = nullptr;
+			else
+				parent->rightChild = nullptr;
+		}
 		delete element;
+	}
 
 	else if (element->leftChild == nullptr && element->rightChild != nullptr) {  // случаи, когда у элемента только один ребёнок тоже простые - нужно только поменять их местами
-		auto swap = element->rightChild;
+		auto swap = *element->rightChild;
 		delete element->rightChild;
-		*element = *swap;
+
+		element->setValue(swap.getValue());  // по-другому присвоить не получиться, т.к. swap удаляется при завершении этого блока
+		element->leftChild = swap.leftChild;
+		element->rightChild = swap.rightChild;
 	}
 
 	else if (element->leftChild != nullptr && element->rightChild == nullptr) {
-		auto swap = element->leftChild;
+		auto swap = *element->leftChild;
 		delete element->leftChild;
-		*element = *swap;
+
+		element->setValue(swap.getValue());
+		element->leftChild = swap.leftChild;
+		element->rightChild = swap.rightChild;
 	}
 
 	else {
-	/* Удаление вершины у которой есть дети в бинарном дереве поиска проходит по следующему алгоритму:
-	 * 1) Идём по дереву от данной вершины с целью найти такую вершину, которая будет больше удаляемой вершины на самое маленькое значение (т.е. сначала идём в правого ребёнка, потом до конца в левого)
-	 * 2) Меняем местами значения у найденной вершины и у удаляемой
-	 * 3) Удаляем найденную вершину (т.к. у неё теперь будет значение удаляемого элемента)
-	 */
+		/* Удаление вершины у которой есть дети в бинарном дереве поиска проходит по следующему алгоритму:
+		 * 1) Идём по дереву от данной вершины с целью найти такую вершину, которая будет больше удаляемой вершины на самое маленькое значение (т.е. сначала идём в правого ребёнка, потом до конца в левого)
+		 * 2) Меняем местами значения у найденной вершины и у удаляемой
+		 * 3) Удаляем найденную вершину (т.к. у неё теперь будет значение удаляемого элемента) по уже готовому алгоритму для вершины без детей
+		 */
+
 		auto minMax = element->rightChild;
 		while (minMax->leftChild != nullptr)
 			minMax = minMax->leftChild;
 		
-		auto swap = minMax;
+		auto swap = *minMax;
 		removeElement(minMax->getValue());
-		*element = *swap;		
+		element->setValue(swap.getValue());
 	}
 }
