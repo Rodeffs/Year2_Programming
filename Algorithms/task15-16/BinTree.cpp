@@ -1,5 +1,6 @@
 #include "BinTree.h"
 #include <vector>
+#include <iostream>
 
 BinTree::BinTree(const string& binTreeInput) {
 	this->inputString = binTreeInput;
@@ -9,6 +10,7 @@ BinTree::BinTree(const string& binTreeInput) {
 
 BinTree::~BinTree() {
 	delete_post_ordered(root);
+	std::cout << "BinTree destructor called" << std::endl;
 }
 
 Node* BinTree::assignChildren(int begin, int end) {

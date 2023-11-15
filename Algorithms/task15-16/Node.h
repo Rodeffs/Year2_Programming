@@ -9,7 +9,6 @@ private:
 	Node* rightChild;
 
 public:
-
 	explicit Node(int val = 0, Node* left = nullptr, Node* right = nullptr) : value{val}, leftChild{left}, rightChild{right} {}
 
 	int getValue();
