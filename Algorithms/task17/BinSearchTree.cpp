@@ -58,7 +58,7 @@ void BinSearchTree::addElement(int value) {  // просто ищем подхо
 			parent = parent->leftChild;
 		}
 
-		if (parent->getValue() < value) {
+		else {
 			if (parent->rightChild == nullptr) {
 				parent->rightChild = child;
 				return;
@@ -73,18 +73,15 @@ void BinSearchTree::removeElement(int value) {
 	Node* parent = nullptr;
 	bool isLeft{false};
 
-	while (true) {  // поиск удаляемого значения
-		if (element->getValue() == value)
-			break;
+	while (element->getValue() != value) {  // поиск удаляемого значения
+		parent = element;
 
 		if (element->getValue() > value) {
-			parent = element;	
 			isLeft = true;
 			element = element->leftChild;
 		}
 
 		if (element->getValue() < value) {
-			parent = element;	
 			isLeft = false;
 			element = element->rightChild;
 		}
@@ -103,19 +100,13 @@ void BinSearchTree::removeElement(int value) {
 	else if (element->leftChild == nullptr && element->rightChild != nullptr) {  // случаи, когда у элемента только один ребёнок тоже простые - нужно только поменять их местами
 		auto swap = *element->rightChild;
 		delete element->rightChild;
-
-		element->setValue(swap.getValue());  // по-другому присвоить не получиться, т.к. swap удаляется при завершении этого блока
-		element->leftChild = swap.leftChild;
-		element->rightChild = swap.rightChild;
+		*element = swap;
 	}
 
 	else if (element->leftChild != nullptr && element->rightChild == nullptr) {
 		auto swap = *element->leftChild;
 		delete element->leftChild;
-
-		element->setValue(swap.getValue());
-		element->leftChild = swap.leftChild;
-		element->rightChild = swap.rightChild;
+		*element = swap;
 	}
 
 	else {
@@ -129,8 +120,8 @@ void BinSearchTree::removeElement(int value) {
 		while (minMax->leftChild != nullptr)
 			minMax = minMax->leftChild;
 		
-		auto swap = *minMax;
-		removeElement(minMax->getValue());
-		element->setValue(swap.getValue());
+		int swap = minMax->getValue();
+		removeElement(swap);
+		element->setValue(swap);
 	}
 }
