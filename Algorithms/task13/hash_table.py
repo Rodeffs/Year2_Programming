@@ -30,7 +30,7 @@ def hash_table(arr, alphabet):
 if __name__ == "__main__":
 
     with open("input.txt", "r") as input_file:  # открываем файл вводных данных в режиме только для чтения
-        inputs = [i.strip(",").strip(".").strip(":").strip(";").strip("!").strip("?").strip("-") for i in input_file.read().split()]
+        inputs = [i.strip(".,:;!?-") for i in input_file.read().split()]
 
     alphabet = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzАаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщъыьЭэЮюЯя"
     hashed = hash_table(inputs, alphabet)
