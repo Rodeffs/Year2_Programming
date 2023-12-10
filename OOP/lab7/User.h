@@ -4,7 +4,7 @@
 
 using std::string;
 
-enum class Gender {MALE, FEMALE};
+enum class Gender {MALE, FEMALE, NEUTRAL};
 
 class User {
 private:

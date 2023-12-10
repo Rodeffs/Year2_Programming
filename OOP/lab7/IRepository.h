@@ -14,7 +14,7 @@ protected:
 public:
 	IRepository() = default;
 
-	virtual ~IRepository() = 0;
+	virtual ~IRepository() = default;
 
 	virtual void Add(T* item) = 0;
 

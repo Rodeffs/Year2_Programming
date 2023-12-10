@@ -7,7 +7,7 @@ class IUserRepository : virtual public IRepository<User> {  // virtual необ�
 public:
 	IUserRepository() = default;
 
-	virtual ~IUserRepository() = 0;
+	virtual ~IUserRepository() = default;
 
 	virtual User* getById(int id) = 0;
 
