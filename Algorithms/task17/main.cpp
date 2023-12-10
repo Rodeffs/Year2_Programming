@@ -6,6 +6,8 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+enum class Language {ENGLISH, RUSSIAN};
+
 std::string getInput() {  // чтобы не было двойного вывода
 	std::string userInput;
 	std::getline(cin, userInput);  // для считывания всей строки ввода используется std::getline()
@@ -13,6 +15,9 @@ std::string getInput() {  // чтобы не было двойного выво�
 }
 
 int main() {
+	cout << "Select language:\n1) English (default)\n2) Русский" << endl;
+
+
 
 	cout << "Введите бинарное дерево поиска в линейно-скобочной записи:" << endl;
 
