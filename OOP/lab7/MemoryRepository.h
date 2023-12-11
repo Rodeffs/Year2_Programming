@@ -1,5 +1,4 @@
 #include "IRepository.h"
-#include <iostream>
 
 template <class T>
 class MemoryRepository : virtual public IRepository<T> {
