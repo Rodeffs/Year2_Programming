@@ -43,6 +43,4 @@ public:
 	void setGender(Gender gender);
 
 	bool operator==(User& other);
-
-	User& operator=(User& other);
 };

@@ -12,7 +12,7 @@ MemoryUserRepository::~MemoryUserRepository() {
 
 User* MemoryUserRepository::getById(int id) {
 	for (int i = 0; i < this->repo.size(); i++) {
-		if (repo[i]->getId() == id)
+		if (this->repo[i]->getId() == id)
 			return this->repo[i];
 	}
 	return nullptr;

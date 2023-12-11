@@ -51,5 +51,12 @@ int main() {
 	auto user6 = userRepo.getById(30);
 	cout << user6->getName() << endl;
 
+	cout << endl;
+
+	auto user7 = new User(20, "James", "james@gmail.com", "9999999999", "Los Angeles", Gender::MALE);
+	userRepo.Update(user7);
+	
+	output(userRepo.Get());
+
 	return 0;
 }

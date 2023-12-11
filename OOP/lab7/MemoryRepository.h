@@ -1,4 +1,5 @@
 #include "IRepository.h"
+#include <iostream>
 
 template <class T>
 class MemoryRepository : virtual public IRepository<T> {
@@ -17,9 +18,11 @@ public:
 
 	void Update(T* item) override {
 		for (int i = 0; i < this->repo.size(); i++)
-			if (this->repo[i] == item) {
-				this->repo[i] = item;
-				break;
+			if (*(this->repo[i]) == *item) {  // иначе будут сравниваться указатели, а не сами элементы
+				delete this->repo[i];
+				this->repo.erase(this->repo.begin()+i);
+				this->repo.insert(this->repo.begin()+i, item);
+				return;
 			}
 	}
 
@@ -28,7 +31,7 @@ public:
 			if (this->repo[i] == item) {
 				delete this->repo[i];
 				this->repo.erase(this->repo.begin()+i);
-				break;
+				return;
 			}
 	}
 

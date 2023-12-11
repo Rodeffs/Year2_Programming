@@ -49,15 +49,6 @@ void User::setGender(Gender gender) {
 }
 
 bool User::operator==(User& other) {
-	return this->getId() == other.getId();  // т.к. у каждого пользователя уникальный id, который после установки по идее не должен меняться, то проверка будет именно по нему,
+	return (this->getId() == other.getId());  // т.к. у каждого пользователя уникальный id, который после установки по идее не должен меняться, то проверка будет именно по нему,
 }
 
-User& User::operator=(User& other) {
-	this->id = other.getId();
-	this->name = other.getName();
-	this->email = other.getEmail();
-	this->phone = other.getPhone();
-	this->city = other.getCity();
-	this->gender = other.getGender();
-	return *this;
-}
