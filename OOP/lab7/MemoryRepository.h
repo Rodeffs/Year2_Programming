@@ -1,6 +1,6 @@
 #include "IRepository.h"
 
-template <class T>
+template <class T>  // для шаблонного класса реализацию нужно писать в заголовочном файле, иначе компилятор не знает, какой тип возвращает T и нужно создавать template.cpp, что нецелесообразно в этом случае
 class MemoryRepository : virtual public IRepository<T> {
 public:
 	MemoryRepository() = default;
