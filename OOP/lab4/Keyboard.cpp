@@ -1,6 +1,15 @@
 #include "Keyboard.h"
 
-void Keyboard::addKey(const Key& key) {
+Keyboard::~Keyboard() {
+	
+	for (int i = 0; i < availableKeys.size(); i++)
+		delete availableKeys[i];
+
+	availableKeys.clear();
+	log.clear();
+}
+
+void Keyboard::addKey(Key* key) {
 
 	availableKeys.push_back(key);
 }
@@ -23,14 +32,14 @@ void Keyboard::pressKey(const std::string& pressedKey) {
 
 	for (int i = 0; i < availableKeys.size(); i++) {
 		auto currentKey = availableKeys[i];  // для этого перегружали оператор присваивания =
-		if (currentKey == pressedKey) {  // для этого перегружали оператор сравнения ==
-			currentKey.setX1(x1);
-			currentKey.setY1(y1);
-			currentKey.setLastLetterX(lastLetterX);
-			currentKey.execute();
-			x1 = currentKey.getX1();
-			y1 = currentKey.getY1();
-			lastLetterX = currentKey.getLastLetterX();
+		if (*currentKey == pressedKey) {  // для этого перегружали оператор сравнения ==
+			currentKey->setX1(x1);
+			currentKey->setY1(y1);
+			currentKey->setLastLetterX(lastLetterX);
+			currentKey->execute();
+			x1 = currentKey->getX1();
+			y1 = currentKey->getY1();
+			lastLetterX = currentKey->getLastLetterX();
 			log.push_back(currentKey);
 			consoleOutput(pressedKey);
 			return;
@@ -42,13 +51,13 @@ void Keyboard::undo() {
 
 	if (!log.empty()) {
 		auto lastKey = log.back();
-		lastKey.setX1(x1);
-		lastKey.setY1(y1);
-		lastKey.setLastLetterX(lastLetterX);
-		lastKey.undo(log);
-		x1 = lastKey.getX1();
-		y1 = lastKey.getY1();
-		lastLetterX = lastKey.getLastLetterX();
+		lastKey->setX1(x1);
+		lastKey->setY1(y1);
+		lastKey->setLastLetterX(lastLetterX);
+		lastKey->undo(log);
+		x1 = lastKey->getX1();
+		y1 = lastKey->getY1();
+		lastLetterX = lastKey->getLastLetterX();
 		log.pop_back();
 		consoleOutput("undo");
 	}

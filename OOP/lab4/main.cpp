@@ -13,17 +13,15 @@ int main() {
 
 	Keyboard keyboard;
 
-	Key u{"u"}, d{"d"}, p{"p"}, L{"L"}, O{"O"}, H{"H"}, E{"E"}, exMark{"!"}, enter{"Enter"};
-
-	u.setCommand(Command::VOLUMEUP);
-	d.setCommand(Command::VOLUMEDOWN);
-	p.setCommand(Command::PRINTKEY);
-	H.setCommand(Command::PRINTKEY);
-	E.setCommand(Command::PRINTKEY);
-	L.setCommand(Command::PRINTKEY);
-	O.setCommand(Command::PRINTKEY);
-	exMark.setCommand(Command::PRINTKEY);
-	enter.setCommand(Command::ENTER);
+	auto u = new Key("u", Command::VOLUMEUP);
+	auto d = new Key("d", Command::VOLUMEDOWN);
+	auto p = new Key("p", Command::PRINTKEY);
+	auto L = new Key("L", Command::PRINTKEY);
+	auto O = new Key("O", Command::PRINTKEY);
+	auto H = new Key("H", Command::PRINTKEY);
+	auto E = new Key("E", Command::PRINTKEY);
+	auto exMark = new Key("!", Command::PRINTKEY);
+	auto enter = new Key("Enter", Command::ENTER);
 
 	keyboard.addKey(u);
 	keyboard.addKey(d);
@@ -36,16 +34,16 @@ int main() {
 	keyboard.addKey(enter);
 
 	keyboard.pressKey("d");
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));  // чтобы между вводами было время для считывания следующего ввода
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));  // чтобы между вводами было время для считывания следующего ввода
 
 	keyboard.pressKey("p");
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	keyboard.pressKey("u");
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	keyboard.undo();
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	keyboard.pressKey("Enter");
 
@@ -56,7 +54,7 @@ int main() {
 		keyboard.pressKey("L");
 		keyboard.pressKey("O");
 		keyboard.pressKey("!");
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
 	keyboard.pressKey("Enter");

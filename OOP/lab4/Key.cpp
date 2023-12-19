@@ -1,10 +1,5 @@
 #include "Key.h"
 
-Key::Key(const std::string& key) {
-
-	this->keyName = key;
-}
-
 void Key::setCommand(Command command) {
 
 	this->commandName = command;
@@ -15,7 +10,12 @@ Command Key::getCommand() const {
 	return this->commandName; 
 }
 
-const std::string& Key::getName() const {
+void Key::setName(const string& name) {
+
+	this->keyName = name;
+}
+
+const string& Key::getName() const {
 
 	return this->keyName;
 }
@@ -50,7 +50,7 @@ void Key::execute() {
 	}
 }
 
-void Key::undo(vector<Key>& log) {
+void Key::undo(vector<Key*>& log) {
 
 	switch (getCommand()) {
 		case Command::VOLUMEUP:
@@ -73,7 +73,7 @@ void Key::undo(vector<Key>& log) {
 		case Command::ENTER:
 			if (y1 > 2)
 				y1--;
-			if (log[log.size() - 2].getCommand() == Command::ENTER)
+			if (log[log.size() - 2]->getCommand() == Command::ENTER)
 				x1 = 1;
 			else  
 				x1 = lastLetterX;
@@ -110,7 +110,7 @@ int Key::getLastLetterX() const {
 	return this->lastLetterX;
 }
 
-bool Key::operator==(const std::string& key) {
+bool Key::operator==(const string& key) {
 
 	return this->keyName == key;
 }
