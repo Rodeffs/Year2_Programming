@@ -14,7 +14,7 @@
 int main() {
 
 	Keyboard keyboard;
-	cout << "\033[1E\033[s";  // чтобы вывод не залез на мою консоль
+	 cout << "\033[H\033[1E\033[s";  // чтобы вывод не залез на мою консоль
 
 	auto u = new Key("u", VolumeUp::execute, VolumeUp::undo);
 	auto d = new Key("d", VolumeDown::execute, VolumeDown::undo);
@@ -77,6 +77,6 @@ int main() {
 
 	keyboard.pressKey("!");
 
-	cout << "\033[" << bottom << ";1H\033[H\033[s" << std::endl;  // чтобы моя консоль в Linux не залазила на вывод
+	cout << "\033[" << bottom << ";1H" << std::endl;  // чтобы моя консоль в Linux не залазила на вывод
 	return 0;
 }
