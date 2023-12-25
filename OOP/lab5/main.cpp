@@ -36,8 +36,10 @@ int main() {
 	sample.AddNPChangingListener();
 	sample.AddNCCListener();
 
+	bool allow = true;
+
 	sample.OnPropertyChanged(&f);
-	sample.OnPropertyChanging(&f);
+	sample.OnPropertyChanging(&f, &allow);
 	sample.OnCollectionChanged(&f);
 
 	sample.addNumber(13);

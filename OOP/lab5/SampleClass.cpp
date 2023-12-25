@@ -6,7 +6,7 @@ void SampleClass::executeNPCListener() {
 }
 
 void SampleClass::executeNPChangingListener() {
-	if (NPChangingisActive())
+	if (NPChangingisActive() && allow)
 		functionNPChanging();
 }
 
@@ -31,11 +31,8 @@ void SampleClass::setSwitcher(bool val) {
 	this->switcher = val;
 }
 
-void SampleClass::allowChanges(bool answer) {
-	this->allow = answer;
-}
-
-void SampleClass::OnPropertyChanging(void (*f)()) {
+void SampleClass::OnPropertyChanging(void (*f)(), bool *allowed) {
+	allow = *allowed;
 	functionNPChanging = f;
 }
 

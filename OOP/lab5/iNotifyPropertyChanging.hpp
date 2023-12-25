@@ -3,13 +3,13 @@
 class iNotifyPropertyChanging {
 private:
 	bool active;
-	bool allow;
 
 protected:
 	void (*functionNPChanging)();
+	bool allow;
 
 public:
-	explicit iNotifyPropertyChanging(bool act = false, bool all = true, void (*func)() = nullptr) : active{act}, allow{all}, functionNPChanging{func} {}
+	explicit iNotifyPropertyChanging(bool act = false, void (*func)() = nullptr) : active{act}, functionNPChanging{func} {}
 
 	void AddNPChangingListener() {
 		active = true;
@@ -23,9 +23,7 @@ public:
 		return active;
 	}
 
-	virtual void allowChanges(bool answer) = 0;
-
 	virtual ~iNotifyPropertyChanging() = default;
 
-	virtual void OnPropertyChanging(void (*f)()) = 0;
+	virtual void OnPropertyChanging(void (*f)(), bool *allowed) = 0;
 };

@@ -7,12 +7,11 @@
 
 using std::vector;
 
-class SampleClass : public iNotifyPropertyChanged, public iNotifyPropertyChanging, public iNotifyCollectionChanged {
+class SampleClass : virtual public iNotifyPropertyChanged, virtual public iNotifyPropertyChanging, virtual public iNotifyCollectionChanged {
 private:
 	vector<int> numbers;
 	int value;
 	bool switcher;
-	bool allow;
 
 	void executeNPCListener();
 
@@ -21,7 +20,7 @@ private:
 	void executeNCCListener();
 
 public:
-	explicit SampleClass() : iNotifyPropertyChanged(false, nullptr), iNotifyPropertyChanging(false, true, nullptr), iNotifyCollectionChanged(false, nullptr) {}
+	explicit SampleClass() : iNotifyPropertyChanged(false, nullptr), iNotifyPropertyChanging(false, nullptr), iNotifyCollectionChanged(false, nullptr) {}
 
 	void addNumber(int number);
 
@@ -31,9 +30,7 @@ public:
 
 	void OnPropertyChanged(void (*f)()) override;
 
-	void allowChanges(bool answer) override;
-
-	void OnPropertyChanging(void (*f)()) override;
+	void OnPropertyChanging(void (*f)(), bool *allowed) override;
 
 	void OnCollectionChanged(void (*f)()) override;
 };
