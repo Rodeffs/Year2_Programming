@@ -16,30 +16,26 @@ void Keyboard::addKey(Key* key) {
 
 void Keyboard::consoleOutput(const std::string& keyName) {
 
-	if (y2 >= bottom) {  // для того, чтобы вывод справа не вылазил за нижние рамки консоли
+	if (y >= bottom) {  // для того, чтобы вывод справа не вылазил за нижние рамки консоли
 		x2 += 20;
-		y2 = 2;
+		y = 2;
 	}
 	
 	if (keyName == "undo")
-		cout << "\033[" << y2 << ";" << x2 << "H| undo()\033[0m";  // ANSI Escape Code
+		cout << "\033[" << y << ";" << x2 << "H| undo()";  // ANSI Escape Code
 	else
-		cout << "\033[" << y2 << ";" << x2 << "H| Pressed(" << keyName << ")\033[0m";
-	y2++;
+		cout << "\033[" << y << ";" << x2 << "H| Pressed(" << keyName << ")";
+	y++;
 }
 
 void Keyboard::pressKey(const std::string& pressedKey) {
 
 	for (int i = 0; i < availableKeys.size(); i++) {
-		auto currentKey = availableKeys[i];  // для этого перегружали оператор присваивания =
+		auto currentKey = availableKeys[i];
 		if (*currentKey == pressedKey) {  // для этого перегружали оператор сравнения ==
 			currentKey->setX1(x1);
-			currentKey->setY1(y1);
-			currentKey->setLastLetterX(lastLetterX);
 			currentKey->execute();
 			x1 = currentKey->getX1();
-			y1 = currentKey->getY1();
-			lastLetterX = currentKey->getLastLetterX();
 			log.push_back(currentKey);
 			consoleOutput(pressedKey);
 			return;
@@ -52,12 +48,8 @@ void Keyboard::undo() {
 	if (!log.empty()) {
 		auto lastKey = log.back();
 		lastKey->setX1(x1);
-		lastKey->setY1(y1);
-		lastKey->setLastLetterX(lastLetterX);
-		lastKey->undo(log);
+		lastKey->undo();
 		x1 = lastKey->getX1();
-		y1 = lastKey->getY1();
-		lastLetterX = lastKey->getLastLetterX();
 		log.pop_back();
 		consoleOutput("undo");
 	}

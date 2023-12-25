@@ -1,13 +1,14 @@
 #pragma once
-#include "Key.h"
+#include "Key.hpp"
+
+#define middle 40  // центр, между левой и правой частью
+#define bottom 41  // нижняя грань
 
 class Keyboard {
 
 private:
 
-	int x1{1}, y1{2}, x2{middle}, y2{2};  // слева то, что выводится в левой части консоли, остальное - с правой
-
-	int lastLetterX = x1;  // костыль для правильной работы undo enter 
+	int x1{1}, x2{middle}, y{2};  // слева то, что выводится в левой части консоли, остальное - с правой
 
 	vector<Key*> availableKeys;  // доступные клавиши
 

@@ -7,5 +7,5 @@ project(lab4) # write the name of the project in the brackets
 
 set(CMAKE_CXX_STANDARD 17) # setting the standard of C++, should be 17 by default
 
-add_executable(lab4 main.cpp Key.cpp Key.h Keyboard.h Keyboard.cpp) # all files used (including the project name) must be written in the brackets
+add_executable(lab4 main.cpp Commands.hpp Key.hpp Keyboard.h Keyboard.cpp) # all files used (including the project name) must be written in the brackets
 
