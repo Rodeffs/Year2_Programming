@@ -1,38 +1,30 @@
 #include "SampleClass.h"
 
-void SampleClass::executeNPCListener() {
-	if (NPCisActive())
-		functionNPC();
-}
-
-void SampleClass::executeNPChangingListener() {
-	if (NPChangingisActive() && allow)
-		functionNPChanging();
-}
-
-void SampleClass::executeNCCListener() {
+void SampleClass::addNumber(int number) {
 	if (NCCisActive())
 		functionNCC();
-}
-
-void SampleClass::addNumber(int number) {
-	executeNPChangingListener();
-	if (allow)
-		numbers.push_back(number);
+	numbers.push_back(number);
 }
 
 void SampleClass::setValue(int val) {
-	executeNPCListener();
-	this->value = val;
+	if (NPChangingisActive()) {
+		if (functionNPChanging("value", value, val))
+			this->value = val;
+		else
+			return;
+	}
+
+	else
+		this->value = val;
 }
 
 void SampleClass::setSwitcher(bool val) {
-	executeNPCListener();
+	if (NPCisActive())
+		functionNPC();
 	this->switcher = val;
 }
 
-void SampleClass::OnPropertyChanging(void (*f)(), bool *allowed) {
-	allow = *allowed;
+void SampleClass::OnPropertyChanging(bool (*f)(const string&, int, int)) {
 	functionNPChanging = f;
 }
 

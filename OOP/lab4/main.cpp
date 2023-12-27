@@ -36,18 +36,20 @@ int main() {
 	keyboard.addKey(exMark);
 	keyboard.addKey(enter);
 
+	int timeout = 500;
+
 	keyboard.pressKey("d");
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));  // чтобы между вводами было время для считывания следующего ввода
+	std::this_thread::sleep_for(std::chrono::milliseconds(timeout));  // чтобы между вводами было время для считывания следующего ввода
 
 	keyboard.pressKey("p");
 	keyboard.pressKey("p");
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
 
 	keyboard.pressKey("u");
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
 
 	keyboard.undo();
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
 
 	keyboard.pressKey("Enter");
 
@@ -58,7 +60,7 @@ int main() {
 		keyboard.pressKey("L");
 		keyboard.pressKey("O");
 		keyboard.pressKey("!");
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(timeout));
 	}
 
 	keyboard.pressKey("Enter");

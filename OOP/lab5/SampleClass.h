@@ -13,12 +13,6 @@ private:
 	int value;
 	bool switcher;
 
-	void executeNPCListener();
-
-	void executeNPChangingListener();
-
-	void executeNCCListener();
-
 public:
 	explicit SampleClass() : iNotifyPropertyChanged(false, nullptr), iNotifyPropertyChanging(false, nullptr), iNotifyCollectionChanged(false, nullptr) {}
 
@@ -30,7 +24,7 @@ public:
 
 	void OnPropertyChanged(void (*f)()) override;
 
-	void OnPropertyChanging(void (*f)(), bool *allowed) override;
+	void OnPropertyChanging(bool (*f)(const string&, int, int)) override;
 
 	void OnCollectionChanged(void (*f)()) override;
 };

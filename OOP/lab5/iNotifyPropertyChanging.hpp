@@ -1,15 +1,19 @@
 #pragma once
 
+#include <string>
+
+using std::string;
+
 class iNotifyPropertyChanging {
 private:
 	bool active;
 
 protected:
-	void (*functionNPChanging)();
+	bool (*functionNPChanging)(const string&, int, int);
 	bool allow;
 
 public:
-	explicit iNotifyPropertyChanging(bool act = false, void (*func)() = nullptr) : active{act}, functionNPChanging{func} {}
+	explicit iNotifyPropertyChanging(bool act = false, bool (*func)(const string&, int, int) = nullptr) : active{act}, functionNPChanging{func} {}
 
 	void AddNPChangingListener() {
 		active = true;
@@ -25,5 +29,5 @@ public:
 
 	virtual ~iNotifyPropertyChanging() = default;
 
-	virtual void OnPropertyChanging(void (*f)(), bool *allowed) = 0;
+	virtual void OnPropertyChanging(bool (*f)(const string&, int, int)) = 0;
 };

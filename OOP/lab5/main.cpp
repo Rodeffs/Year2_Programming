@@ -23,26 +23,41 @@ coll.addElement(123)
 #include "SampleClass.h"
 #include <iostream>
 
+using std::cout;
+using std::cin;
+using std::endl;
+
 void f() {
 	std::cout << "Property has changed" << std::endl;
 }
 
+bool g(const string& name, int oldVar, int newVar) {
+	cout << "Property " << name << " change attempt, old value: " << oldVar << " new value: " << newVar << endl;
+	bool allow = 0;
+	cout << "Allow changes?" << endl;
+	cin >> allow;
+	if (allow)
+		cout << "Changes allowed" << endl;
+	else
+		cout << "Changes not allowed" << endl;
+	return allow;
+}
 
 int main() {
 
 	SampleClass sample;
 
+	sample.setValue(12);
+
 	sample.AddNPCListener();
 	sample.AddNPChangingListener();
 	sample.AddNCCListener();
 
-	bool allow = true;
-
 	sample.OnPropertyChanged(&f);
-	sample.OnPropertyChanging(&f, &allow);
+	sample.OnPropertyChanging(&g);
 	sample.OnCollectionChanged(&f);
 
-	sample.addNumber(13);
+	sample.setValue(13);
 
 	return 0;
 }
