@@ -127,18 +127,15 @@ def main():
         return
 
     sortGraph(graph)
-
     convexhull = Graham(graph)
-
-    print("Выпуклая оболочка выглядит так:\n")
-    for i in range(0, len(convexhull)):
-        print(f"Point({convexhull[i].x}, {convexhull[i].y}, {convexhull[i].pol})\n")
 
     # Для того, чтобы была выпуклая оболочка минимум одна точка не должна лежать на одной прямой с остальными
     if len(convexhull) < 3:
         print("Выпуклой оболочки нет")
     else:
-        print("Выпуклая оболочка есть")
+        print("Выпуклая оболочка выглядит так:\n")
+        for i in range(0, len(convexhull)):
+            print(f"Point({convexhull[i].x}, {convexhull[i].y}, {convexhull[i].pol})\n")
 
 
 if __name__ == "__main__":
