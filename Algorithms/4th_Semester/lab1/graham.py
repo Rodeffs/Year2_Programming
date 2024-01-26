@@ -61,18 +61,18 @@ def sortGraph(graph):
                 curMin = curY
             minY.append(i)
 
-    if len(minY) > 1:
-        curMinX = 9999999999999
-        for j in range(0, len(minY)):
-            curPoint = graph[minY[j]]
-            if curPoint.x < curMinX:
-                curMinX = curPoint.x
-                p0 = curPoint
-                swapIndex = minY[j]
+    curMin = 9999999999999
+    for j in range(0, len(minY)):
+        curPoint = graph[minY[j]]
+        if curPoint.x < curMin:
+            curMin = curPoint.x
+            p0 = curPoint
+            swapIndex = minY[j]
 
     # Перенесём точку отсчёта в начало
     graph[0], graph[swapIndex] = graph[swapIndex], graph[0]
 
+    # И задаём каждой точке угол поворота от точки отсчёта
     for i in range(1, len(graph)):
         graph[i].pol = p0
 
@@ -118,7 +118,6 @@ def Graham(graph):
 
 
 def main():
-
     graph = [Point(6, 2), Point(2, 4), Point(8, 4),
              Point(3, 6), Point(6, 6), Point(3, 2), 
              Point(6, 4), Point(4, 5), Point(5, 3)]
@@ -135,6 +134,7 @@ def main():
     for i in range(0, len(convexhull)):
         print(f"Point({convexhull[i].x}, {convexhull[i].y}, {convexhull[i].pol})\n")
 
+    # Для того, чтобы была выпуклая оболочка минимум одна точка не должна лежать на одной прямой с остальными
     if len(convexhull) < 3:
         print("Выпуклой оболочки нет")
     else:
