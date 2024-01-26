@@ -37,10 +37,7 @@ class Point:
         x1 -= x2
         y1 -= y2
         x2, y2 = 0, 0
-        if x1 == 0 and y1 == 0:
-            self.__pol = 0
-        else:
-            self.__pol = math.acos(x1/math.sqrt(x1**2 + y1**2))
+        self.__pol = math.acos(x1/math.sqrt(x1**2 + y1**2))
 
 
 def distance(Point1, Point2):
@@ -129,13 +126,14 @@ def main():
     sortGraph(graph)
     convexhull = Graham(graph)
 
-    # Для того, чтобы была выпуклая оболочка минимум одна точка не должна лежать на одной прямой с остальными
+    # Для того, чтобы была выпуклая оболочка, минимум одна точка не должна лежать на одной прямой с остальными
     if len(convexhull) < 3:
         print("Выпуклой оболочки нет")
     else:
         print("Выпуклая оболочка выглядит так:\n")
+        convexhull.append(convexhull[0])  # чтобы обход закольцевался
         for i in range(0, len(convexhull)):
-            print(f"Point({convexhull[i].x}, {convexhull[i].y}, {convexhull[i].pol})\n")
+            print(f"{i+1}. Point(x = {convexhull[i].x}, y = {convexhull[i].y}, angle = {convexhull[i].pol})\n")
 
 
 if __name__ == "__main__":
