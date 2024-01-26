@@ -131,7 +131,6 @@ def main():
         print("Выпуклой оболочки нет")
     else:
         print("Выпуклая оболочка выглядит так:\n")
-        convexhull.append(convexhull[0])  # чтобы обход закольцевался
         for i in range(0, len(convexhull)):
             print(f"{i+1}. Point(x = {convexhull[i].x}, y = {convexhull[i].y}, angle = {convexhull[i].pol})\n")
 
