@@ -90,7 +90,7 @@ def leftRotation(p1, p2, p3):
     a_y = p2.y - p1.y
     b_x = p3.x - p2.x
     b_y = p3.y - p2.y
-    return (a_x*b_y - a_y*b_x) >= 0
+    return (a_x*b_y - a_y*b_x) > 0
 
 
 # Сам алгоритм Грэхема
@@ -106,8 +106,10 @@ def Graham(graph):
     for i in range(2, len(graph)):
         top, pretop = convexhull[-1], convexhull[-2]
 
-        if not leftRotation(pretop, top, graph[i]):
+        while len(convexhull) >= 2 and not leftRotation(pretop, top, graph[i]):
             convexhull.pop()
+            if len(convexhull) >= 2:
+                top, pretop = convexhull[-1], convexhull[-2]
 
         convexhull.append(graph[i])
 
@@ -115,9 +117,8 @@ def Graham(graph):
 
 
 def main():
-    graph = [Point(6, 2), Point(2, 4), Point(8, 4),
-             Point(3, 6), Point(6, 6), Point(3, 2), 
-             Point(6, 4), Point(4, 5), Point(5, 3)]
+    graph = [Point(0, 0), Point(0, 100), Point(100, 0), Point(50, 50), Point(3, 0), Point(5, 0), Point(1, 0), Point(0, 3), Point(0, 1), Point(0, 8),
+             Point(15, 20)]
 
     if len(graph) < 3:
         print("Слишком мало точек, нужно минимум 3")
