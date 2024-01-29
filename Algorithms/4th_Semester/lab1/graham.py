@@ -78,7 +78,7 @@ def sortGraph(graph):
         j = i
         while j > 1 and graph[j-1].pol >= graph[j].pol:
             if graph[j-1].pol == graph[j].pol:
-                if distance(p0, graph[j-1]) < distance(p0, graph[j]):
+                if distance(p0, graph[j-1]) <= distance(p0, graph[j]):
                     break
             graph[j-1], graph[j] = graph[j], graph[j-1]
             j -= 1
