@@ -14,7 +14,7 @@ bool isCharIn(char letter, vector<char> &letters) {
 	return std::find(letters.begin(), letters.end(), letter) != letters.end();
 }
 
-void makeword(string& base, int length, vector<string> &used_words, vector<int> &new_word) {
+void makeword(string& base, int length, int* wordcounter, vector<int> &new_word) {
 	vector<char> used_letters;
 
 	for (int i = 0; i < base.length(); i++)
@@ -23,15 +23,16 @@ void makeword(string& base, int length, vector<string> &used_words, vector<int> 
 			used_letters.push_back(base[i]);
 
 			if (new_word.size() == length) {
-				string actual_word = "";
+				(*wordcounter)++;
 
+				string actual_word = "";
 				for (int j = 0; j < new_word.size(); j++)
 					actual_word += base[new_word[j]];
 
-				used_words.push_back(actual_word);
+				std::cout << actual_word << std::endl;
 			}
 			else
-				makeword(base, length, used_words, new_word);
+				makeword(base, length, wordcounter, new_word);
 
 			new_word.pop_back();
 		}
@@ -48,12 +49,12 @@ int main() {
 	int word_length;
 	std::cin >> word_length;
 
-	vector<string> used_words;
 	vector<int> new_word;
+	int wordcounter = 0;
 
-	makeword(base, word_length, used_words, new_word);
+	makeword(base, word_length, &wordcounter, new_word);
 
-	std::cout << "Из слова " << base << " можно составить столько слов длины " << word_length << ": " << used_words.size() << std::endl;
+	std::cout << "Из слова " << base << " можно составить столько слов длины " << word_length << ": " << wordcounter << std::endl;
 
 	return 0;
 }
