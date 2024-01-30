@@ -23,7 +23,13 @@ void move2(int x, int y, int *count, int maxX, int maxY, int countY) {
 }
 
 int main() {
-	int count1 = 0, count2 = 0, sizeX = 17, sizeY = 12;
+	int count1 = 0, count2 = 0, sizeX, sizeY;
+
+	std::cout << "Введите размер по x:" << std::endl;
+	std::cin >> sizeX;
+
+	std::cout << "Введите размер по y:" << std::endl;
+	std::cin >> sizeY;
 
 	move(0, 0, &count1, sizeX, sizeY);
 	move2(0, 0, &count2, sizeX, sizeY, 0);
