@@ -38,10 +38,18 @@ void makeword(string& base, int length, vector<string> &used_words, vector<int> 
 }
 
 int main() {
-	string base = "KOMBINATORIKA";
+	std::cout << "Введите слово (латиницей):" << std::endl;
+	
+	string base;
+	std::cin >> base;
+
+	std::cout << "Введите, слова какой длины из него получить (не длиннее самого слова):" << std::endl;
+
+	int word_length;
+	std::cin >> word_length;
+
 	vector<string> used_words;
 	vector<int> new_word;
-	int word_length = 6;
 
 	makeword(base, word_length, used_words, new_word);
 
