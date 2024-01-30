@@ -3,8 +3,6 @@
 #include <string>
 #include <algorithm>
 
-using std::cout;
-using std::endl;
 using std::vector;
 using std::string;
 
@@ -30,7 +28,6 @@ void makeword(string& base, int length, vector<string> &used_words, vector<int> 
 				for (int j = 0; j < new_word.size(); j++)
 					actual_word += base[new_word[j]];
 
-				cout << actual_word << endl;
 				used_words.push_back(actual_word);
 			}
 			else
@@ -48,7 +45,7 @@ int main() {
 
 	makeword(base, word_length, used_words, new_word);
 
-	cout << "Всего слов " << used_words.size() << endl;
+	std::cout << "Из слова " << base << " можно составить столько слов длины " << word_length << ": " << used_words.size() << std::endl;
 
 	return 0;
 }
