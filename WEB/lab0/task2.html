@@ -1,0 +1,24 @@
+<!--Вариант 7. Создайте форму, позволяющую выбирать несколько из данных значений в поле цвет: красный, зеленый, синий и пр. Цвет текста каждого пункта сделайте соответствующего цвета. Используйте теги <label> и <input>.-->
+
+<!DOCTYPE html>
+
+<html lang="ru">
+	<head>
+		<title>Задание 2</title>
+	</head>
+	<body>
+		<h1>Само задание</h1>
+		<form action="/sample_script.py" method="get">
+			<label for="color">Выберете цвет:</label>
+			<input list="colors" name="color" id="color"><br>
+			<datalist id="colors">
+				<!--Честно, я перепробовал все методы и перелазил весь интернет, но судя по всему тэгу option нельзя присвоить цвет через style, поэтому я не знаю, как выполнить это задание-->
+				<option style="color:red" value="Красный">Красный</option>
+				<option style="color:green" value="Зелёный">Зелёный</option>
+				<option style="color:blue" value="Синий">Синий</option>
+				<option style="color:yellow" value="Жёлтый">Жёлтый</option>
+				<option style="color:purple" value="Фиолетовый">Фиолетовый</option>
+			</datalist>
+		</form>
+	</body>
+</html>
