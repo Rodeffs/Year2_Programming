@@ -84,7 +84,7 @@ def main():
     stat2 = dict(sorted(stat2.items(), key=lambda item: item[1]))
     print("3) Количество вхождений пар:\n", stat2)
 
-    stat_groups = stat
+    stat_groups = dict(stat)  # баг, если = написать без dict(), то первые 2 символа сольются
     huffman(stat_groups, group_codes)
 
     # Кодировка каждого символа (если символ входит в пару, то добавляем слева код этой пары):
