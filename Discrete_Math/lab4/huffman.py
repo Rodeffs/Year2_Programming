@@ -29,8 +29,8 @@ def average(stat, coded, size):  # средняя длина слова
     avg = 0
 
     for i in range(0, len(characters)):
-        curchar = characters[i]
-        avg += len(coded[curchar]) * stat[curchar] / size
+        cur_char = characters[i]
+        avg += len(coded[cur_char]) * stat[cur_char] / size
 
     return avg
 
@@ -55,10 +55,11 @@ def main():
 
     # Статистический анализ:
     for i in range(0, len(file)):
-        if file[i] not in stat:
-            stat[file[i]] = 1
+        cur_char = file[i]
+        if cur_char not in stat:
+            stat[cur_char] = 1
         else:
-            stat[file[i]] += 1
+            stat[cur_char] += 1
     stat.pop("\n")
 
     # Подсчёт количества символов:
@@ -78,10 +79,11 @@ def main():
 
     # Статистический анализ пар:
     for i in range(0, len(file2)):
-        if file2[i] not in stat2:
-            stat2[file2[i]] = 1
+        cur_char = file2[i]
+        if cur_char not in stat2:
+            stat2[cur_char] = 1
         else:
-            stat2[file2[i]] += 1
+            stat2[cur_char] += 1
     stat2.pop("\n\n")
 
     # Частота пар:
@@ -95,11 +97,11 @@ def main():
     characters = list(stat.keys())
     char_group = list(char_groups_codes.keys())
     for i in range(0, len(characters)):
-        curchar = characters[i]
-        coded[curchar] = ""
+        cur_char = characters[i]
+        coded[cur_char] = ""
         for j in range(0, len(char_group)):
-            if curchar in char_group[j]:
-                coded[curchar] = char_groups_codes[char_group[j]] + coded[curchar]
+            if cur_char in char_group[j]:
+                coded[cur_char] = char_groups_codes[char_group[j]] + coded[cur_char]
     print("4) Код каждого символа:\n", coded)
 
     # После сжатия:
