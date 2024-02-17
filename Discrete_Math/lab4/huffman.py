@@ -7,18 +7,21 @@ def huffman(stat, char_groups_codes):
         left_char = char_groups[0]
         right_char = char_groups[1]
 
-        new_str = left_char + right_char  # объединяем буквы в пару
-        new_value = stat[left_char] + stat[right_char]  # их вхождения складываем
+        # Объединяем два символа в один, а их веса складываем
+        new_str = left_char + right_char
+        new_value = stat[left_char] + stat[right_char]
 
-        # Т.к. отсортировали, то первые два символа (или пары) всегда наименьшие
+        # Т.к. отсортирован, то у первых двух символов всегда наименьшие веса
         char_groups_codes[left_char] = '0'
         char_groups_codes[right_char] = '1'
 
+        # Заменяем старые символы их слиянием
         stat.pop(left_char)
         stat.pop(right_char)
-
         stat[new_str] = new_value
-        stat = dict(sorted(stat.items(), key=lambda item: item[1]))  # сортируем
+
+        # Сортируем снова (из-за этого коды слегка отличаются, но той же длины)
+        stat = dict(sorted(stat.items(), key=lambda item: item[1]))
 
 
 def average(stat, coded, size):  # средняя длина слова
