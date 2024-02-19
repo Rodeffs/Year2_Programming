@@ -39,10 +39,6 @@ class Edge:
         return (self.start == other.start and self.end == other.end) or \
                 (self.start == other.end and self.end == other.start)
 
-    def check_link(self, other):  # проверка на то, связаны ли рёбра или нет
-        return self.start == other.start or self.start == other.end or \
-            self.end == other.end or self.end == other.start
-
 
 def dfs(node, visited, parent, subgraph):
     visited.append(node)
@@ -57,7 +53,7 @@ def dfs(node, visited, parent, subgraph):
     return False
 
 
-def cycles(shortest, total_nodes):
+def cycles(shortest, total_nodes, nodes):
     # Суть в том, чтобы понять, зациклит ли добавленное ребро граф или нет
     # Для этого добавим его в список рёбер shortest и построим из них подграф
     # Далее, проходимся по всем вершинам этого подграфа, см. список to_visit
@@ -66,19 +62,22 @@ def cycles(shortest, total_nodes):
     # Если нынешнюю вершину мы не посещали, то рекурсивно вызываем dfs() от неё
     # Если же посещали и при этом это не предыдущая вершина, то граф зациклился
 
+    visited = []
+    to_visit = list(nodes)
+    last = shortest[-1]
+    if last.start not in to_visit:
+        to_visit.append(last.start)
+    if last.end not in to_visit:
+        to_visit.append(last.end)
+
     subgraph = [[] for i in range(0, total_nodes)]
     for i in range(0, total_nodes):
         subgraph[i] = [0 for i in range(0, total_nodes)]
 
-    to_visit, visited = [], []
     for i in range(0, len(shortest)):
         cur = shortest[i]
         subgraph[cur.start][cur.end] = cur.weight
         subgraph[cur.end][cur.start] = cur.weight
-        if cur.start not in to_visit:
-            to_visit.append(cur.start)
-        if cur.end not in to_visit:
-            to_visit.append(cur.end)
 
     for i in range(0, len(to_visit)):
         node = to_visit[i]
@@ -112,20 +111,17 @@ def main():
 
     # Ищем кратчайший путь по Крускалу
     # Суть в добавлении таких ребёр к новому подграфу, чтобы не было циклов
-    shortest, nodes, i, smallest_weight = [edges[0]], 2, 1, edges[0].weight
-    while nodes < total_nodes:
-        link = False
+    shortest, nodes, i, smallest_weight = [], [], 0, 0
+    while len(nodes) < total_nodes:
         cur_edge = edges[i]
         shortest.append(cur_edge)
-        for j in range(0, len(shortest) - 1):
-            if shortest[j].check_link(cur_edge):
-                if cycles(shortest, total_nodes):
-                    link = False
-                    shortest.remove(cur_edge)
-                    break
-                link = True
-        if link:
-            nodes += 1
+        if cycles(shortest, total_nodes, nodes):
+            shortest.remove(cur_edge)
+        else:
+            if cur_edge.start not in nodes:
+                nodes.append(cur_edge.start)
+            if cur_edge.end not in nodes:
+                nodes.append(cur_edge.end)
             smallest_weight += cur_edge.weight
         i += 1
 
