@@ -1,3 +1,10 @@
+"""
+Ресурсы:
+    https://habr.com/ru/articles/569444/
+    https://www.geeksforgeeks.org/detect-cycle-undirected-graph/
+"""
+
+
 class Edge:
     __start = 0
     __end = 0
@@ -36,40 +43,52 @@ class Edge:
         return (self.start == other.start and self.end == other.end) or \
                 (self.start == other.end and self.end == other.start)
 
-    def check_link(self, other):
+    def check_link(self, other):  # проверка на то, связаны ли рёбра или нет
         return self.start == other.start or self.start == other.end or \
             self.end == other.end or self.end == other.start
 
 
-def cycles(cur_edge, edges, total_nodes):  # проверка на зацикливание через поиск в ширину
-    queue, visited, to_visit = [], [], []
-    graph = [[] for i in range(0, total_nodes)]
-    for i in range(0, total_nodes):
-        graph[i] = [0 for i in range(0, total_nodes)]
+def dfs(node, visited, parent, subgraph):
+    visited.append(node)
 
-    for i in range(0, len(edges)):
-        cur = edges[i]
-        graph[cur.start][cur.end] = cur.weight
-        graph[cur.end][cur.start] = cur.weight
+    for i in range(0, len(subgraph[node])):
+        if subgraph[node][i]:
+            if i not in visited:
+                if dfs(i, visited, node, subgraph):
+                    return True
+            elif parent != i:
+                return True
+    return False
+
+
+def cycles(shortest, total_nodes):
+    # Суть в том, чтобы понять, зациклит ли добавленное ребро граф или нет
+    # Для этого добавим его в список рёбер shortest и построим из них подграф
+    # Далее, проходимся по всем вершинам этого подграфа, см. список to_visit
+    # На каждой итерации будем вызывать поиск в глубину dfs()
+    # Также каждый раз запоминаем parent - предыдущую вершину
+    # Если нынешнюю вершину мы не посещали, то рекурсивно вызываем dfs() от неё
+    # Если же посещали и при этом это не предыдущая вершина, то граф зациклился
+
+    subgraph = [[] for i in range(0, total_nodes)]
+    for i in range(0, total_nodes):
+        subgraph[i] = [0 for i in range(0, total_nodes)]
+
+    to_visit, visited = [], []
+    for i in range(0, len(shortest)):
+        cur = shortest[i]
+        subgraph[cur.start][cur.end] = cur.weight
+        subgraph[cur.end][cur.start] = cur.weight
         if cur.start not in to_visit:
             to_visit.append(cur.start)
         if cur.end not in to_visit:
             to_visit.append(cur.end)
 
-    for startnode in range(0, len(to_visit)):
-        if startnode not in visited:
-            queue.append(startnode)
-
-        while queue:
-            node = queue[0]
-            visited.append(node)
-            queue.pop(0)
-            for j in range(0, len(graph[node])):
-                if graph[node][j] and j in to_visit:
-                    if j in visited or j in queue:
-                        return True
-                    else:
-                        queue.append(j)
+    for i in range(0, len(to_visit)):
+        node = to_visit[i]
+        if node not in visited:
+            if dfs(node, visited, -1, subgraph):
+                return True
 
     return False
 
@@ -93,29 +112,22 @@ def main():
                     edges.append(temp)
 
     # Сортируем рёбра в порядке неубывания их весов:
-    print("Изначальный граф:")
-    for i in range(0, len(edges)):
-        print(f"    {edges[i].start} <--> {edges[i].end} = {edges[i].weight}")
     edges = sorted(edges, key=lambda item: item.weight)
-    print("Отсортированный граф:")
-    for i in range(0, len(edges)):
-        print(f"    {edges[i].start} <--> {edges[i].end} = {edges[i].weight}")
 
-    # Ищем кратчайший путь по Крускалу, т.е. добавляем кратчайшие пути без зацикливаний
+    # Ищем кратчайший путь по Крускалу
+    # Суть в добавлении таких ребёр к новому подграфу, чтобы не было циклов
     shortest, nodes, i, smallest_weight = [edges[0]], 2, 1, edges[0].weight
     while nodes < total_nodes:
         link = False
         cur_edge = edges[i]
         shortest.append(cur_edge)
-        print(f"\n{cur_edge.start} <--> {cur_edge.end}")
         for j in range(0, len(shortest) - 1):
             if shortest[j].check_link(cur_edge):
-                if cycles(cur_edge, shortest, total_nodes):
+                if cycles(shortest, total_nodes):
                     link = False
                     shortest.remove(cur_edge)
                     break
                 link = True
-                print(f"    links to {shortest[j].start} <--> {shortest[j].end}")
         if link:
             nodes += 1
             smallest_weight += cur_edge.weight
