@@ -6,10 +6,6 @@
 
 
 class Edge:
-    __start = 0
-    __end = 0
-    __weight = 0
-
     def __init__(self, a, b, val):
         self.__start = a
         self.__end = b
