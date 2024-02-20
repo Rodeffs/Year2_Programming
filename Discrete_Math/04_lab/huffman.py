@@ -86,11 +86,11 @@ def huffman_pairs(stat, string_codes):  # коды Хаффмана для па�
 
 
 def count(stat):
-    char_count = 0
+    amount = 0
     values = list(stat.values())
     for i in range(0, len(values)):
-        char_count += values[i]
-    return char_count
+        amount += values[i]
+    return amount
 
 
 def compress(stat, coded):
