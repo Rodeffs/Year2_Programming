@@ -57,6 +57,22 @@ def encode_huffman(stat, char_groups_codes, coded):
                 coded[cur_char] = char_groups_codes[char_group[j]] + coded[cur_char]
 
 
+def encode_huffman2(stat, char_groups_codes, coded):
+    characters = list(stat.keys())
+    char_group = list(char_groups_codes.keys())
+    for i in range(0, len(characters)):
+        cur_char = characters[i]
+        coded[cur_char] = ""
+        for j in range(0, len(char_group)):
+            string = char_group[j]
+            split_string = []
+            for k in range(1, len(string), 2):
+                split_string.append(string[k-1]+string[k])
+            if cur_char in split_string:
+                coded[cur_char] = char_groups_codes[char_group[j]] + coded[cur_char]
+
+
+
 def count(stat):
     char_count = 0
     values = list(stat.values())
@@ -116,7 +132,7 @@ def main():
     # Кодировка пар:
     stat2_copy = dict(stat2)
     huffman(stat2_copy, char_pairs_codes)
-    encode_huffman(stat2, char_pairs_codes, coded2)
+    encode_huffman2(stat2, char_pairs_codes, coded2)
     print("4.2) Код пар:\n", coded2)
 
     # После сжатия:
