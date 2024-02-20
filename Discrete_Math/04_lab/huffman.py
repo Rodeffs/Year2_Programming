@@ -51,36 +51,30 @@ def shannon(stat, size):  # формула Шеннона
     return shan
 
 
-def huffman(stat, string_codes):  # коды Хаффмана для символов
-    characters = list(stat.keys())
+def has_substring(string, substr, n):  # делим строку на группы из n символов
+    split_string = []
+
+    for i in range(0, len(string), n):
+        group = ""
+        for j in range(0, n):
+            group += string[i+j]
+        split_string.append(group)
+
+    return substr in split_string
+
+
+def huffman(stat, string_codes, n):  # коды Хаффмана
+    to_encode = list(stat.keys())
     char_group = list(string_codes.keys())
     coded = {}
 
-    for i in range(0, len(characters)):
-        cur_char = characters[i]
-        coded[cur_char] = ""
+    for i in range(0, len(to_encode)):
+        current = to_encode[i]
+        coded[current] = ""
         for j in range(0, len(char_group)):
-            if cur_char in char_group[j]:
-                coded[cur_char] = string_codes[char_group[j]] + coded[cur_char]
-
-    return coded
-
-
-def huffman_pairs(stat, string_codes):  # коды Хаффмана для пар
-    pairs = list(stat.keys())
-    pair_group = list(string_codes.keys())
-    coded = {}
-
-    for i in range(0, len(pairs)):
-        cur_pair = pairs[i]
-        coded[cur_pair] = ""
-        for j in range(0, len(pair_group)):
-            string = pair_group[j]
-            split_string = []
-            for k in range(1, len(string), 2):  # делим строку на пары
-                split_string.append(string[k-1]+string[k])
-            if cur_pair in split_string:
-                coded[cur_pair] = string_codes[string] + coded[cur_pair]
+            string = char_group[j]
+            if has_substring(string, current, n):
+                coded[current] = string_codes[string] + coded[current]
 
     return coded
 
@@ -136,7 +130,7 @@ def main():
 
     # Кодировка каждого символа (если символ входит в пару, то добавляем слева код этой пары):
     string_chars_codes = encode(stat)
-    coded = huffman(stat, string_chars_codes)
+    coded = huffman(stat, string_chars_codes, 1)
     print("3) Код каждого символа:\n", coded)
 
     # Сжатие:
@@ -157,8 +151,8 @@ def main():
 
     # Считываение по парам:
     file2 = []
-    for i in range(1, len(file), 2):
-        file2.append(file[i-1] + file[i])
+    for i in range(0, len(file)-1, 2):
+        file2.append(file[i] + file[i+1])
 
     # Статистический анализ пар:
     stat2 = analysis(file2)
@@ -174,7 +168,7 @@ def main():
 
     # Кодировка пар:
     string_pairs_codes = encode(stat2)
-    coded2 = huffman_pairs(stat2, string_pairs_codes)
+    coded2 = huffman(stat2, string_pairs_codes, 2)
     print("12) Коды пар:\n", coded2)
 
     # Сжатие:
