@@ -66,7 +66,7 @@ def huffman(stat, string_codes):  # коды Хаффмана для симво�
     return coded
 
 
-def huffman2(stat, string_codes):  # коды Хаффмана для пар
+def huffman_pairs(stat, string_codes):  # коды Хаффмана для пар
     pairs = list(stat.keys())
     pair_group = list(string_codes.keys())
     coded = {}
@@ -124,27 +124,27 @@ def main():
     stat.pop("\n")
 
     # Подсчёт количества символов:
-    char_count = count(stat)
-    print("1) Изначальное количество символов в тексте:", char_count)
+    chars_count = count(stat)
+    print("1) Изначальное количество символов в тексте:", chars_count)
 
     # Сортировка по частоте:
     stat = dict(sorted(stat.items(), key=lambda item: item[1]))
     print("2) Количество вхождений каждого символа:\n", stat)
 
     # Кодировка каждого символа (если символ входит в пару, то добавляем слева код этой пары):
-    char_groups_codes = encode(stat)
-    coded = huffman(stat, char_groups_codes)
+    string_chars_codes = encode(stat)
+    coded = huffman(stat, string_chars_codes)
     print("3) Код каждого символа:\n", coded)
 
     # Сжатие:
-    size = char_count * 5
-    avg = average(stat, coded, char_count)
+    size = chars_count * 5
+    avg = average(stat, coded, chars_count)
     new_size = compress(stat, coded)
     print(f"4) Изначальный размер текста был {size} бит, после кодировки стал {new_size} бит")
     print(f"5) Степень сжатия: {new_size/size}\n6) Коэф. сжатия: {size/new_size}\n7) Средняя длина слова: {avg}")
 
     # Применение формулы Шеннона:
-    shan_val = shannon(stat, char_count)
+    shan_val = shannon(stat, chars_count)
     print("8) Количество информации по Шеннону равно:", shan_val)
     print("9) Разность среднего размера символа кодов Хаффмана и количества информации из формулы Шеннона:", 1 - shan_val / avg)
 
@@ -162,26 +162,26 @@ def main():
     stat2.pop("\n\n")
 
     # Подсчёт количества пар:
-    pair_count = count(stat2)
-    print("10) Изначальное количество пар символов в тексте:", pair_count)
+    pairs_count = count(stat2)
+    print("10) Изначальное количество пар символов в тексте:", pairs_count)
 
     # Сортировка по частоте:
     stat2 = dict(sorted(stat2.items(), key=lambda item: item[1]))
     print("11) Количество вхождений пар:\n", stat2)
 
     # Кодировка пар:
-    char_pairs_codes = encode(stat2)
-    coded2 = huffman2(stat2, char_pairs_codes)
-    print("12) Код пар:\n", coded2)
+    string_pairs_codes = encode(stat2)
+    coded2 = huffman_pairs(stat2, string_pairs_codes)
+    print("12) Коды пар:\n", coded2)
 
     # Сжатие:
-    avg2 = average(stat2, coded2, pair_count)
+    avg2 = average(stat2, coded2, pairs_count)
     new_size2 = compress(stat2, coded2)
     print(f"13) Изначальный размер текста был {size} бит, после кодировки стал {new_size2} бит")
     print(f"14) Степень сжатия: {new_size2/size}\n15) Коэф. сжатия: {size/new_size2}\n16) Средняя длина пары: {avg2}")
 
     # Применение формулы Шеннона для пар:
-    shan_val2 = shannon(stat2, pair_count)
+    shan_val2 = shannon(stat2, pairs_count)
     print("17) Количество информации по Шеннону равно:", shan_val2)
     print("18) Разность среднего размера символа кодов Хаффмана и количества информации из формулы Шеннона:", 1 - shan_val2 / avg2)
 
