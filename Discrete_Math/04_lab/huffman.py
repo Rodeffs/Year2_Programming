@@ -72,7 +72,6 @@ def encode_huffman2(stat, char_groups_codes, coded):
                 coded[cur_char] = char_groups_codes[char_group[j]] + coded[cur_char]
 
 
-
 def count(stat):
     char_count = 0
     values = list(stat.values())
