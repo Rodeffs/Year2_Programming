@@ -52,15 +52,14 @@ def shannon(stat, size):  # формула Шеннона
 
 
 def has_substring(string, substr, n):  # делим строку на группы из n символов
-    split_string = []
-
     for i in range(0, len(string), n):
         group = ""
         for j in range(0, n):
             group += string[i+j]
-        split_string.append(group)
+        if substr == group:
+            return True
 
-    return substr in split_string
+    return False
 
 
 def huffman(stat, string_codes, n):  # коды Хаффмана
