@@ -88,6 +88,7 @@ def huffman_pairs(stat, string_codes):  # коды Хаффмана для па�
 def count(stat):
     amount = 0
     values = list(stat.values())
+
     for i in range(0, len(values)):
         amount += values[i]
     return amount
@@ -96,6 +97,7 @@ def count(stat):
 def compress(stat, coded):
     new_size = 0
     characters = list(stat.keys())
+
     for i in range(0, len(characters)):
         new_size += stat[characters[i]] * len(coded[characters[i]])
     return new_size
@@ -103,6 +105,7 @@ def compress(stat, coded):
 
 def analysis(file):
     stat = {}
+
     for i in range(0, len(file)):
         cur_char = file[i]
         if cur_char not in stat:
