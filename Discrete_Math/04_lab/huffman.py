@@ -53,10 +53,10 @@ def shannon(stat, size):  # формула Шеннона
 
 def has_substring(string, substr, n):  # делим строку на группы из n символов
     for i in range(0, len(string), n):
-        group = ""
+        char_group = ""
         for j in range(0, n):
-            group += string[i+j]
-        if substr == group:
+            char_group += string[i+j]
+        if substr == char_group:
             return True
 
     return False
