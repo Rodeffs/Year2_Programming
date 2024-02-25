@@ -96,7 +96,7 @@ def main():
         graph[i] = [int(j) for j in graph[i]]
 
     total_nodes = len(graph)
-    shortest, queue, visited, nodes, smallest_weight = [], [], [], [0], 0
+    shortest, queue, nodes, smallest_weight = [], [], [0], 0
 
     # Суть этого алгоритма почти такая же, что и у Крускала.
     # Начальную вершину берём произовольно (проще брать начальную),
@@ -109,9 +109,8 @@ def main():
         for i in range(0, len(graph[last_node])):
             path = graph[last_node][i]
             cur_edge = Edge(last_node, i, path)
-            if path and (cur_edge not in visited):
+            if path and (cur_edge not in queue) and (cur_edge not in shortest):
                 place_in_queue(cur_edge, queue)
-                visited.append(cur_edge)
 
         while True:
             closest = queue[0]
