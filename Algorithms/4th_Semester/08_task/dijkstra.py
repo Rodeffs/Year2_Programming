@@ -6,38 +6,28 @@ def main():
 
     total_nodes = len(graph)
 
-    print(f"В графе всего {total_nodes} вершин. Введите вершину (отсчёт от 0), от которой искать кратчаший путь:")
-    while True:
-        start = int(input())
-        if start < 0 or start >= total_nodes:
-            print("Такой вершины в графе нет. Попробуйте ещё раз")
-        else:
-            break
+    start = int(input(f"Введите номер вершины от 0 до {total_nodes-1}, от которой искать пути: "))
 
-    nodes = {}
+    queue = {}  # приоритетная очередь
     for i in range(0, total_nodes):
         if i == start:
-            nodes[i] = 0
+            queue[i] = 0
         else:
-            nodes[i] = 99999999999
+            queue[i] = 99999999999
 
-    priority_queue = dict(nodes)  # это и есть приоритетная очередь
-    while len(priority_queue) > 0:
-        closest_node = min(priority_queue.items(), key=lambda value: value[1])  # элемент с наименьшей маркой
-        cur_node, mark = closest_node[0], closest_node[1]
+    while len(queue) > 0:
+        closest = min(queue.items(), key=lambda x: x[1])  # ближайший элемент
+        node, mark = closest[0], closest[1]
 
         for i in range(0, total_nodes):
-            cur_path = graph[cur_node][i]
-            if cur_path and (i in priority_queue.keys()):
-                if mark + cur_path < nodes[i]:
-                    nodes[i] = mark + cur_path
-                    priority_queue[i] = mark + cur_path
+            path = graph[node][i]
+            if path and (i in queue.keys()):
+                if mark + path < queue[i]:
+                    queue[i] = mark + path
 
-        priority_queue.pop(cur_node)
-
-    for i in range(0, total_nodes):
-        if i != start:
-            print(f"Кратчайшее расстояние от вершины {start} до {i} равно {nodes[i]}")
+        if start != node:
+            print(f"Кратчайшее расстояние от {start} до {node} равно {mark}")
+        queue.pop(node)
 
 
 if __name__ == "__main__":
