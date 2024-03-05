@@ -374,4 +374,39 @@ echo "\n\n";
 
 // 18 пункт
 
+function more_than_10($x, $y) {
+	return ($x + $y) > 10;
+}
 
+function equal($x, $y) {
+	return $x == $y;
+}
+
+// Тернарный оператор как и в C
+echo $test? "\n" : "верно\n";
+
+$age = 45;
+
+if ($age < 10 || $age > 99) {
+	echo "age за пределами\n";
+}
+else {
+	$digit_sum = $age % 10 + floor($age / 10) % 100;
+	if ($digit_sum <= 9) {
+		echo "сумма цифр однозначна\n";
+	}
+	else {
+		echo "сумма цифр двузначна\n";
+	}
+}
+
+$arr = [5, 60, 87];
+
+if (count($arr) == 3) {
+	echo "сумма элементов массива = ", $arr[0] + $arr[1] + $arr[2];
+}
+
+echo "\n\n";
+
+
+// 19 пункт
