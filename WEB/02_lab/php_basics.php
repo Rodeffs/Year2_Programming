@@ -165,9 +165,8 @@ for ($i = 0; $i < 10; $i++) {
 
 echo "random array:\n";
 
-foreach ($rand_arr as $i) {
-	echo "$i ";
-}
+// Для вывода массива
+print_r($rand_arr);
 
 $a = 789;
 
@@ -382,6 +381,8 @@ function equal($x, $y) {
 	return $x == $y;
 }
 
+$test = 0;
+
 // Тернарный оператор как и в C
 echo $test? "\n" : "верно\n";
 
@@ -425,3 +426,48 @@ echo "\n";
 
 
 // 20 пункт
+
+$ls = [89, 4273, 10, 2, 0, 829, 12458];
+
+echo "среднее арифметическое элементов массива = ", array_sum($ls) / count($ls), "\n";
+
+echo "сумма чисел от 1 до 100 = ", (1 + 100) * 100 / 2, "\n";  # сумма ариф. прогрессии :)
+
+function sqrt_arr($item, $key) {
+	echo sqrt($item), " ";
+}
+
+echo "квадратные корни элементов массива:\n";
+
+array_walk($ls, 'sqrt_arr');
+
+$alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+$to_fill = [];
+
+function letter_number(&$to_fill, $alphabet, $i = 0) {
+	if ($i < count($alphabet)) {
+		$to_fill[$alphabet[$i]] = $i + 1;
+		letter_number($to_fill, $alphabet, $i + 1);
+	}
+}
+
+letter_number($to_fill, $alphabet);
+
+echo "\nмассив, ключи которого англ. буквы:\n";
+
+print_r($to_fill);
+
+$numbers = "1234567890";
+
+function sum_str($str, $sum = 0, $i = 0) {
+	if ($i < strlen($str) - 1) {
+		$sum += (int)substr($str, $i, 2);
+		return sum_str($str, $sum, $i + 2);
+	}
+	return $sum;
+}
+
+echo "\nсумма пар чисел = ", sum_str($numbers), "\n";
+
+?>
