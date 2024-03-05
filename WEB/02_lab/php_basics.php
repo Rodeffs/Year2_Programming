@@ -16,7 +16,7 @@ $order.=", two number 9s, a number 9 large, a number 6 with extra dip, a number 
 // Don't change the line below
 echo "\nYour order is: $very_bad_unclear_name.";
 
-echo "\n";
+echo "\n\n";
 
 
 // 2 пункт
@@ -39,7 +39,7 @@ $last_month = 1187.23;
 
 $this_month = 1089.98;
 
-echo $last_month - $this_month, "\n";
+echo $last_month - $this_month, "\n\n";
 
 
 // 11 пункт (3 пункт?)
@@ -52,4 +52,28 @@ $days = 16 * $months;
 
 $days_per_language = $days / $num_languages;
 
-echo "days per language = $days_per_language\n";
+echo "days per language = $days_per_language\n\n";
+
+
+// 12 пункт
+
+echo 8**2, "\n\n";
+
+
+// 13 пункт
+
+$my_num = 24;
+
+$answer = $my_num;
+
+$answer += 2;
+
+$answer *= 2;
+
+$answer -= 2;
+
+$answer /= 2;
+
+$answer -= $my_num;
+
+echo "answer = $answer\n\n";
