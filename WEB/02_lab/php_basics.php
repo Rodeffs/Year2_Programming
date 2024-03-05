@@ -222,4 +222,16 @@ echo "\nчтобы сумма была больше 10, нужно сложит�
 
 // 15 пункт
 
+function printStringReturnNumber() {
+	echo "строка\n";
+	return 100;
+}
+
+$my_num = printStringReturnNumber();
+
+echo "значение функции = $my_num\n\n";
+
+
+// 16 пункт
+
 
