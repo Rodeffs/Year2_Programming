@@ -42,4 +42,14 @@ $this_month = 1089.98;
 echo $last_month - $this_month, "\n";
 
 
-// 3 пункт
+// 11 пункт (3 пункт?)
+
+$num_languages = 4;
+
+$months = 11;
+
+$days = 16 * $months;
+
+$days_per_language = $days / $num_languages;
+
+echo "days per language = $days_per_language\n";
