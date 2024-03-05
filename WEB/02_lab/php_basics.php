@@ -409,3 +409,19 @@ if (count($arr) == 3) {
 echo "\n\n";
 
 
+// 19 пункт
+
+$x_arr = [];
+
+for ($i = 1; $i < 21; $i++) {
+	array_push($x_arr, str_repeat("x", $i));
+}
+
+foreach ($x_arr as $i) {
+	echo "$i\n";
+}
+
+echo "\n";
+
+
+// 20 пункт
