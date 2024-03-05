@@ -234,4 +234,63 @@ echo "значение функции = $my_num\n\n";
 
 // 16 пункт
 
+function increaseEnthusiasm($str) {
+	return $str.="!";
+}
+
+echo increaseEnthusiasm("ФТИ+1"), "\n";
+
+function repeatThreeTimes($str) {
+	for ($i = 0; $i < 3; $i++) {
+		echo $str;
+	}
+}
+
+echo repeatThreeTimes("Я ТЕБЕ ГОВОРИЛ, ЧТО ТАКОЕ БЕЗУМИЕ?"), "\n";
+
+echo increaseEnthusiasm(increaseEnthusiasm(repeatThreeTimes("ААААА"))), "\n";
+
+function cut(&$str, $remain = 10) {
+	$str = substr($str, 0, $remain);
+}
+
+$str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+cut($str);
+
+echo $str, "\n";
+
+$arr_recursive = [10, 20, 30, 40, 50];
+
+function recur($arr, $i = 0) {
+	echo $arr[$i], " ";
+	if ($i + 1 < count($arr)) {
+		recur($arr, $i + 1);
+	}
+}
+
+recur($arr_recursive);
+
+echo "\n";
+
+function sum_digits($num) {
+	$sum = 0;
+	$copy = $num;
+	while ($copy >= 1) {
+		$sum += $copy % 10;
+		$copy = floor($copy / 10);
+	}
+	echo "$sum\n";
+	if ($sum > 9) {
+		sum_digits($sum);
+	}
+}
+
+$num_to_sum = 357298429553939842;
+
+echo "изначальное число $num_to_sum, сумма (суммы) его цифр:\n", sum_digits($num_to_sum);
+
+
+// 17 пункт
+
 
