@@ -134,11 +134,8 @@ echo "	 до сотых = $val001\n";
 
 $sq587 = sqrt(587);
 
-$arr = [];
-
-$arr['floor'] = floor($sq587);
-
-$arr['ceil'] = ceil($sq587);
+// Ассоциативный массив
+$arr = array("floor"=>floor($sq587), "ceil"=>ceil($sq587));
 
 $o1 = $arr['ceil'];
 
@@ -288,9 +285,93 @@ function sum_digits($num) {
 
 $num_to_sum = 357298429553939842;
 
-echo "изначальное число $num_to_sum, сумма (суммы) его цифр:\n", sum_digits($num_to_sum);
+echo "изначальное число $num_to_sum, сумма (суммы) его цифр:\n", sum_digits($num_to_sum), "\n";
 
 
 // 17 пункт
+
+$x_arr = [];
+
+for ($i = 1; $i < 11; $i++) {
+	array_push($x_arr, str_repeat("x", $i));
+}
+
+foreach ($x_arr as $i) {
+	echo "$i\n";
+}
+
+function arrayFill($sym, $t) {
+	$filled = [];
+	for ($i = 0; $i < $t; $i++) {
+		array_push($filled, $sym);
+	}
+	return $filled;
+}
+
+$arr_arr = arrayFill("arr", 10);
+
+foreach ($arr_arr as $i) {
+	echo "$i ";
+}
+
+$two_dim = [[1, 2, 3], [4, 5], [6]];
+
+$total = 0;
+
+for ($i = 0; $i < count($two_dim); $i++) {
+	for ($j = 0; $j < count($two_dim[$i]); $j++) {
+		$total += $two_dim[$i][$j];
+	}
+}
+
+echo "\nсумма элементов двумерного массива равна $total\n";
+
+$elem = 1;
+
+$three_three = [];
+
+for ($i = 0; $i < 3; $i++) {
+	for ($j = 0; $j < 3; $j++) {
+		$three_three[$i][$j] = $elem;
+		$elem++;
+	}
+}
+
+for ($i = 0; $i < 3; $i++) {
+	for ($j = 0; $j < 3; $j++) {
+		echo $three_three[$i][$j], " ";
+	}
+}
+
+$mas = [2, 5, 3, 9];
+
+$result = $mas[0] * $mas[1] + $mas[2] * $mas[3];
+
+echo "\nresult = $result\n";
+
+$user = [];
+
+$user = array("name"=>"Александр", "surname"=>"Александров", "patronymic"=>"Александрович");
+
+echo $user['surname'], " ", $user['name'], " ", $user['patronymic'], "\n";
+
+$date = array("year"=>2024, "month"=>3, "day"=>5);
+
+echo $date['year'], "-", $date['month'], "-", $date['day'], "\n";
+
+$arr = ['a', 'b', 'c', 'd', 'e'];
+
+$len = count($arr);
+
+echo "arr count = ", $len;
+
+echo "\nlast element = ", $arr[$len-1];
+
+echo "\nsecond to last = ", $arr[$len-2];
+
+echo "\n\n";
+
+
+// 18 пункт
 
 
