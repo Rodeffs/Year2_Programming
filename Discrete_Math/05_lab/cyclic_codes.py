@@ -1,6 +1,10 @@
 import math
 
 
+def str_bin(x):
+    return str(bin(x)).lstrip("0b")
+
+
 def bit_count(x):
     # Считаю количество битов через логарифм по осн. 2
     # В случае, если число - степень 2, то добавляю 1 к ответу
@@ -64,9 +68,7 @@ def main():
         code_word = (x << k) + r
         coded.append(code_word)
 
-    for i in coded:
-        in_bin = str(bin(i)).lstrip("0b")
-        print(f"Кодовое слово {i}, в двоичной: {in_bin}")
+        print(f"Для слова {str_bin(x)} код {str_bin(code_word)}")
 
 
 if __name__ == "__main__":
