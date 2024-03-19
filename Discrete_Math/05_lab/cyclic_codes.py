@@ -19,6 +19,10 @@ def polynom_remain(f, g):  # деление многочленов
     return r
 
 
+def leading_0(x, n):
+    return '0' * (n - bits(x)) + to_bin(x)
+
+
 def main():
     n = 15  # общее число элементов
     m = 5  # информационные элементы
@@ -77,18 +81,22 @@ def main():
 
     for i in keys:
         initial = to_bin(i) + " " * (m - bits(i))
-        result = '0' * (n - bits(coded[i][0])) + to_bin(coded[i][0])
+        result = leading_0(coded[i][0], n)
         print(f"Для слова {initial} код = {result}; d min = {coded[i][1]}")
 
-    print()
-
     guarantee = int((d_min - 1)/2)
-    print("Кратность гарантированно исправляемых ошибок:", guarantee, "\n")
+    print("\nКратность гарантированно исправляемых ошибок:", guarantee, "\n")
 
     errors = 0
     for i in range(1, guarantee + 1):
         errors += (fact(2**m) / (fact(i) * fact(2**m - i)))  # бином. коэф.
     print("Число различных векторов ошибок, которые можно исправить:", errors)
+
+    error_vector = 0b001010000000001
+    print("\nВозьмём вектор ошибки", leading_0(error_vector, n))
+
+    syndrome = polynom_remain(coded[2][0] ^ error_vector, polynom)
+    print("\nСиндром этого вектора:", to_bin(syndrome))
 
     print("\nКратность гарантированно обнаружаемых ошибок:", d_min - 1)
 
