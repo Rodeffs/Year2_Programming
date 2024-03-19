@@ -60,7 +60,7 @@ def main():
         code_word = multiply + r
         coded.append(code_word)
 
-        print(f"Для слова {to_bin(x)} код {to_bin(code_word)}")
+        print(f"Для слова {to_bin(x)} код {'0'*(n-bits(code_word))+to_bin(code_word)}")
 
 
 if __name__ == "__main__":
