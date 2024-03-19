@@ -1,3 +1,6 @@
+from math import factorial as fact
+
+
 def to_bin(x):
     return bin(x).lstrip("0b")
 
@@ -22,7 +25,7 @@ def main():
     k = 10  # избыточные элементы
     polynom = 0b10100110111  # порождающий многочлен
 
-    print("Порождающий многочлен: ", to_bin(polynom), "\n")
+    print("Порождающий многочлен:", to_bin(polynom), "\n")
 
     """
     Порождающая матрица имеет m строк и n столбцов, где в каждой строке
@@ -62,6 +65,7 @@ def main():
         coded[x] = [multiply + r, float("inf")]
 
     keys = list(coded.keys())
+    d_min = float("inf")  # мин. расстояние Хемминга
     for i in range(len(keys)):
         current = keys[i]
         for j in range(i+1, len(keys)):
@@ -69,11 +73,24 @@ def main():
             d = to_bin(coded[current][0] ^ coded[other][0]).count('1')
             coded[current][1] = min(coded[current][1], d)
             coded[other][1] = min(coded[other][1], d)
+            d_min = min(d_min, d)
 
     for i in keys:
         initial = to_bin(i) + " " * (m - bits(i))
         result = '0' * (n - bits(coded[i][0])) + to_bin(coded[i][0])
         print(f"Для слова {initial} код = {result}; d min = {coded[i][1]}")
+
+    print()
+
+    guarantee = int((d_min - 1)/2)
+    print("Кратность гарантированно исправляемых ошибок:", guarantee)
+
+    errors = 0
+    for i in range(1, guarantee + 1):
+        errors += (fact(2**m) / (fact(i) * fact(2**m - i)))  # бином. коэф.
+    print("Число различных векторов ошибок, которые можно исправить:", errors)
+
+    print("Кратность гарантированно обнаружаемых ошибок:", d_min - 1)
 
 
 if __name__ == "__main__":
