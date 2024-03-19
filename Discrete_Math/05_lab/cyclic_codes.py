@@ -19,7 +19,7 @@ def polynom_remain(f, g):  # деление многочленов
     return r
 
 
-def leading_0(x, n):
+def leading_0(x, n):  # для того, чтобы кол-во битов было ровно n
     return '0' * (n - bits(x)) + to_bin(x)
 
 
@@ -31,11 +31,8 @@ def main():
 
     print("Порождающий многочлен:", to_bin(polynom), "\n")
 
-    """
-    Порождающая матрица имеет m строк и n столбцов, где в каждой строке
-    записывается полином в отражённом виде и сдвигается вправо каждую строку
-    """
-
+    # Порождающая матрица имеет m строк и n столбцов, где в каждой строке
+    # записывается полином в отражённом виде и сдвигается вправо каждую строку
     matrix = [[0]*n for i in range(0, m)]
     offset = 0
     for i in range(0, m):
@@ -53,28 +50,28 @@ def main():
         print(row)
     print()
 
-    """
-    Слово w кодируются так:
-    w = x * pow(2, k) + R, где
-      R - остаток от деления на многочлен, см polynom_remain()
-      x принимает значения от 1 до (pow(2, m) - 1) включительно
-    При том расстояние между каждым кодовым словом w должно быть >= d, т.е.
-    они должны отличаться друг от друга минимум d битами
-    """
-
+    # Слово w кодируются так:
+    # w = x * pow(2, k) + R, где
+    #   R - остаток от деления на многочлен, см polynom_remain()
+    #   x принимает значения от 1 до (pow(2, m) - 1) включительно
+    # При том расстояние между каждым кодовым словом w должно быть >= d, т.е.
+    # они должны отличаться друг от друга минимум d битами
     coded = {}
     for x in range(1, 2**m):
         multiply = x << k  # (x * 2**k) = (x << k)
         r = polynom_remain(multiply, polynom)
         coded[x] = [multiply + r, float("inf")]
 
+    # Определение минимального расстояния Хемминга:
     keys = list(coded.keys())
-    d_min = float("inf")  # мин. расстояние Хемминга
+    d_min = float("inf")
     for i in range(len(keys)):
         current = keys[i]
         for j in range(i+1, len(keys)):
             other = keys[j]
+
             d = to_bin(coded[current][0] ^ coded[other][0]).count('1')
+
             coded[current][1] = min(coded[current][1], d)
             coded[other][1] = min(coded[other][1], d)
             d_min = min(d_min, d)
@@ -93,12 +90,19 @@ def main():
     print("Число различных векторов ошибок, которые можно исправить:", errors)
 
     error_vector = 0b001010000000001
-    print("\nВозьмём вектор ошибки", leading_0(error_vector, n))
+    print("\nВозьмём вектор ошибки:", leading_0(error_vector, n))
 
     syndrome = polynom_remain(coded[2][0] ^ error_vector, polynom)
-    print("\nСиндром этого вектора:", to_bin(syndrome))
+    print("Синдром этого вектора:", to_bin(syndrome))
 
     print("\nКратность гарантированно обнаружаемых ошибок:", d_min - 1)
+
+    # Эти вектора не могут быть обнаружены, т.к. в них столько много ошибок,
+    # что они полностью заменяют одно кодовое слово на другое
+    # Эти вектора совпадают с кодовыми словами
+    print("\nВектора ошибок, которые не могут быть обнаружены:")
+    for i in list(coded.values()):
+        print(leading_0(i[0], n))
 
 
 if __name__ == "__main__":
