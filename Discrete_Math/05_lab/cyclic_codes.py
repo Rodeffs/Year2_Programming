@@ -22,6 +22,8 @@ def main():
     k = 10  # избыточные элементы
     polynom = 0b10100110111  # порождающий многочлен
 
+    print("Порождающий многочлен: ", to_bin(polynom), "\n")
+
     """
     Порождающая матрица имеет m строк и n столбцов, где в каждой строке
     записывается полином в отражённом виде и сдвигается вправо каждую строку
@@ -36,7 +38,7 @@ def main():
             pol_copy >>= 1
         offset += 1
 
-    print("Порождающая матрица для многочлена", str(bin(polynom)).lstrip("0b"))
+    print("Порождающая матрица:")
     for i in range(0, m):
         row = ""
         for j in range(0, n):
@@ -53,14 +55,25 @@ def main():
     они должны отличаться друг от друга минимум d битами
     """
 
-    coded = []
+    coded = {}
     for x in range(1, 2**m):
         multiply = x << k  # (x * 2**k) = (x << k)
         r = polynom_remain(multiply, polynom)
-        code_word = multiply + r
-        coded.append(code_word)
+        coded[x] = [multiply + r, float("inf")]
 
-        print(f"Для слова {to_bin(x)} код {'0'*(n-bits(code_word))+to_bin(code_word)}")
+    keys = list(coded.keys())
+    for i in range(len(keys)):
+        current = keys[i]
+        for j in range(i+1, len(keys)):
+            other = keys[j]
+            d = to_bin(coded[current][0] ^ coded[other][0]).count('1')
+            coded[current][1] = min(coded[current][1], d)
+            coded[other][1] = min(coded[other][1], d)
+
+    for i in keys:
+        initial = to_bin(i) + " " * (m - bits(i))
+        result = '0' * (n - bits(coded[i][0])) + to_bin(coded[i][0])
+        print(f"Для слова {initial} код {result} минимальное расстояние {coded[i][1]}")
 
 
 if __name__ == "__main__":
