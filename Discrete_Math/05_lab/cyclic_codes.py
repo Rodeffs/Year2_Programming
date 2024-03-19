@@ -73,7 +73,7 @@ def main():
     for i in keys:
         initial = to_bin(i) + " " * (m - bits(i))
         result = '0' * (n - bits(coded[i][0])) + to_bin(coded[i][0])
-        print(f"Для слова {initial} код {result} минимальное расстояние {coded[i][1]}")
+        print(f"Для слова {initial} код = {result}; d min = {coded[i][1]}")
 
 
 if __name__ == "__main__":
