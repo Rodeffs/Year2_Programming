@@ -1,24 +1,16 @@
-import math
+def to_bin(x):
+    return bin(x).lstrip("0b")
 
 
-def str_bin(x):
-    return str(bin(x)).lstrip("0b")
-
-
-def bit_count(x):
-    # Считаю количество битов через логарифм по осн. 2
-    # В случае, если число - степень 2, то добавляю 1 к ответу
-    is_power_of_2 = (x & (x-1)) == 0
-    return math.ceil(math.log(x, 2)) + is_power_of_2
+def bits(x):
+    return len(to_bin(x))
 
 
 def polynom_remain(f, g):  # деление многочленов
     r = f
-    do_once = True  # костыль, т.к. нужно минимум 1 раз поделить
 
-    while bit_count(g) <= bit_count(r) or do_once:
-        do_once = False
-        div = g << (bit_count(r) - bit_count(g))
+    while bits(r) >= bits(g):
+        div = g << (bits(r) - bits(g))
         r = r ^ div  # операция XOR, т.е. модуль от 2 суммы битов
 
     return r
@@ -50,7 +42,7 @@ def main():
         for j in range(0, n):
             row += (str(matrix[i][j])+" ")
         print(row)
-    print("\n")
+    print()
 
     """
     Слово w кодируются так:
@@ -63,11 +55,12 @@ def main():
 
     coded = []
     for x in range(1, 2**m):
-        r = polynom_remain(x << k, polynom)  # (x * 2**k) = (x << k)
-        code_word = (x << k) + r
+        multiply = x << k  # (x * 2**k) = (x << k)
+        r = polynom_remain(multiply, polynom)
+        code_word = multiply + r
         coded.append(code_word)
 
-        print(f"Для слова {str_bin(x)} код {str_bin(code_word)}")
+        print(f"Для слова {to_bin(x)} код {to_bin(code_word)}")
 
 
 if __name__ == "__main__":
