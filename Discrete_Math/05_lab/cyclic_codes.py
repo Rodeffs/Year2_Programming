@@ -9,6 +9,10 @@ def bits(x):
     return len(to_bin(x))
 
 
+def leading_0(x, n):  # для того, чтобы кол-во битов было ровно n
+    return '0' * (n - bits(x)) + to_bin(x)
+
+
 def polynom_remain(f, g):  # деление многочленов
     r = f
 
@@ -17,10 +21,6 @@ def polynom_remain(f, g):  # деление многочленов
         r = r ^ div  # операция XOR, т.е. модуль по 2 от суммы битов
 
     return r
-
-
-def leading_0(x, n):  # для того, чтобы кол-во битов было ровно n
-    return '0' * (n - bits(x)) + to_bin(x)
 
 
 def main():
