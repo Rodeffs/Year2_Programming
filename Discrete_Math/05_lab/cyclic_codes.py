@@ -14,7 +14,7 @@ def polynom_remain(f, g):  # деление многочленов
 
     while bits(r) >= bits(g):
         div = g << (bits(r) - bits(g))
-        r = r ^ div  # операция XOR, т.е. модуль от 2 суммы битов
+        r = r ^ div  # операция XOR, т.е. модуль по 2 от суммы битов
 
     return r
 
