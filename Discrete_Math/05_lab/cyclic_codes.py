@@ -87,7 +87,7 @@ def main():
 
     errors = 0
     for i in range(1, guarantee + 1):
-        errors += (fact(2**m) / (fact(i) * fact(2**m - i)))  # бином. коэф.
+        errors += (fact(n) / (fact(i) * fact(n - i)))  # бином. коэф.
     print("Число различных векторов ошибок, которые можно исправить:", errors)
 
     error_vector = 0b001010000000001
