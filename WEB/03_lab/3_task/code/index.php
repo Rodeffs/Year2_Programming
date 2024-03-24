@@ -6,7 +6,7 @@
 	</head>
 	<body>
 		<div id="submission">
-			<h1>Submit broadcast</h1>
+			<h1>Enter submission</h1>
 			<form method="post" action="submit.php">
 				<label for="email">Email</label>
 				<input type="email" name="email" required><br>

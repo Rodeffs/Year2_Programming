@@ -7,7 +7,7 @@
 	<body>
 		<div id="step 1">
 			<h1>Step 1</h1>
-			<form method="post" action="step1.php">
+			<form method="post" action="cookie_display.php">
 				<textarea id="text1" name="text1" rows="20" cols="120"></textarea><br>
 				<input type="submit" name="submit text" value="COUNT" >
 			</form>
@@ -22,7 +22,7 @@
 		</div>
 		<div id="step 2 & 3">
 			<h1>Step 2 & 3</h1>
-			<form method="post" action="step2-3.php">
+			<form method="post" action="session_display.php">
 				<label for="surname">Surname</label>
 				<input type="surname" name="surname"><br>
 
