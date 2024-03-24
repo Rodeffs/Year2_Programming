@@ -2,7 +2,7 @@
 
 <html lang="en">
 	<head>
-		<title>Working with files</title>
+		<title>Working with files (painfully)</title>
 	</head>
 	<body>
 		<div id="submission">
@@ -31,6 +31,39 @@
 		</div>
 		<div id="table">
 			<h3>Uploaded submissions:</h3>
+			<table>
+				<thead>
+					<th>Category</th>
+					<th>Email</th>
+					<th>Title</th>
+					<th>Content</th>	
+				</thead>
+				<tbody>
+					<?php
+						function output($filePath, $toOutput) { // рекурсивное считывание
+							$directories = array_slice(scandir($filePath), 2);
+
+							foreach ($directories as $dir) {
+								$nextFilePath = $filePath."/{$dir}";
+								
+								if (mime_content_type($nextFilePath) == "text/plain") {
+									$title = substr($dir, 0, -4); // чтобы убрать .txt с конца
+									$text = nl2br(file_get_contents($nextFilePath)); // nl2br нужно, чтобы правильно отображать \n
+
+									echo "{$toOutput}<td>{$title}</td><td>{$text}</td></tr>";
+								}
+								else {
+									output($nextFilePath, $toOutput."<td>{$dir}</td>");
+								}	
+							}
+						}
+						
+						if (is_dir("categories")) {
+							output("categories", "<tr>");
+						}
+					?>
+				</tbody>	
+			</table>
 		</div>
 	</body>
 </html>

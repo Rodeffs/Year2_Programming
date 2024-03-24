@@ -14,7 +14,20 @@ $category = $_POST["category"];
 $title = $_POST["title"];
 $content = $_POST["content"];
 
-$filePath = "categories/{$category}/{$title}.txt";
+
+
+$filePath = "";
+$directories = ["categories", "/{$category}", "/{$email}"];
+
+foreach ($directories as $dir) {
+	$filePath.=$dir;
+	if (! is_dir($filePath)) {
+		mkdir($filePath); // почему-то mkdir() не изменяет permissions на 0777, хотя должен
+		chmod($filePath, 0777);
+	}
+}
+
+$filePath.="/{$title}.txt";
 
 if (false === file_put_contents($filePath, $content)) {
 	throw new Exception("Error while writing content to a file");
