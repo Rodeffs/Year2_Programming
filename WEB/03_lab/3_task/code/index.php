@@ -41,7 +41,7 @@
 				<tbody>
 					<?php
 						function output($filePath, $toOutput) { // рекурсивное считывание
-							$directories = array_slice(scandir($filePath), 2);
+							$directories = array_slice(scandir($filePath), 2); // т.к. первые два элемента - это . и ..
 
 							foreach ($directories as $dir) {
 								$nextFilePath = $filePath."/{$dir}";
