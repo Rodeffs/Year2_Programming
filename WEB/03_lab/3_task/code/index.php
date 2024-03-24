@@ -46,7 +46,7 @@
 							foreach ($directories as $dir) {
 								$nextFilePath = $filePath."/{$dir}";
 								
-								if (mime_content_type($nextFilePath) == "text/plain") {
+								if (mime_content_type($nextFilePath) == "text/plain") { // проверка на текстовый файл
 									$title = substr($dir, 0, -4); // чтобы убрать .txt с конца
 									$text = nl2br(file_get_contents($nextFilePath)); // nl2br нужно, чтобы правильно отображать \n
 
