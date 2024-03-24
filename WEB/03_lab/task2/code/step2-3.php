@@ -13,12 +13,11 @@ if (isset($_POST["name"], $_POST["surname"], $_POST["age"], $_POST["salary"], $_
 
 	echo "<h1>The output for step 2:</h1>";
 
-	// nl2br превращает \n в <br>
-	echo nl2br("Your name is {$_SESSION["name"]}\n");	
-	echo nl2br("Your surname is {$_SESSION["surname"]}\n");	
-	echo nl2br("Your age is {$_SESSION["age"]}\n");	
-	echo nl2br("Your salary is {$_SESSION["salary"]}\n");	
-	echo nl2br("Your email is {$_SESSION["email"]}\n");
+	echo "Your name is {$_SESSION["name"]}<br>";	
+	echo "Your surname is {$_SESSION["surname"]}<br>";	
+	echo "Your age is {$_SESSION["age"]}<br>";	
+	echo "Your salary is {$_SESSION["salary"]}<br>";	
+	echo "Your email is {$_SESSION["email"]}<br>";
 	
 	echo "<h1>The output for step 3:</h1>";
 	

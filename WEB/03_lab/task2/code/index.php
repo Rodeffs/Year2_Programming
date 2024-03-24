@@ -14,10 +14,10 @@
 			</form>
 			<?php
 			if (isset($_COOKIE["word_count"])) {	
-				echo nl2br("Word count is {$_COOKIE["word_count"]}\n");
+				echo "Word count is {$_COOKIE["word_count"]}<br>";
 			}
 			if (isset($_COOKIE["char_count"])) {	
-				echo nl2br("Character count is {$_COOKIE["char_count"]}\n");
+				echo "Character count is {$_COOKIE["char_count"]}<br>";
 			}
 			?>
 		</div>
