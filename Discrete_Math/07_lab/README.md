@@ -1,3 +1,3 @@
-# Условие:
+# Ссылка на репозиторий:
 
-![task](./task.jpg "task")
+https://github.com/yaggod/DiscreteMathematicsTask7
