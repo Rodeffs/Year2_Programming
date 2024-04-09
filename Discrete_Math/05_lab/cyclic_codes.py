@@ -88,7 +88,7 @@ def main():
     keys = list(coded.keys())
     values = list(coded.values())
 
-    # Определение минимального расстояния Хемминга, кол-во операций = (n-1)*n/2
+    # Определение минимального расстояния Хемминга, операций = (2^n-1)*2^(n-1)
     if d_min == float("inf"):
         for i in range(len(keys)):
             current = keys[i]
