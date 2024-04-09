@@ -25,27 +25,27 @@
 """
 
 
-def next_state(pattern, state, char, state_count):
-    if state < state_count and pattern[state] == char:
+def next_state(pattern, state, char, total_states):
+    if state < total_states and pattern[state] == char:
         return state + 1
 
     for i in range(state, 0, -1):  # начинаем с самого большого значения
         if pattern[i-1] == char and i % 2 == 0:  # т.к. не получится поделить на префикс и суффикс, если нечётная длина
-            if pattern[:int(i/2)] == pattern[int(i/2):i]:
+            if pattern[:(i//2)] == pattern[(i//2):i]:
                 return i
 
     return 0
 
 
-def create_table(pattern, file, state_count):
+def create_table(pattern, file, total_states):
     table = {}
     for i in file:
         if i not in list(table.keys()):
-            table[i] = [0 for j in range(state_count+1)]
+            table[i] = [0 for j in range(total_states+1)]
 
-    for state in range(state_count+1):
+    for state in range(total_states+1):
         for char in list(table.keys()):
-            table[char][state] = next_state(pattern, state, char, state_count)
+            table[char][state] = next_state(pattern, state, char, total_states)
 
     return table
 
@@ -55,15 +55,15 @@ def main():
         file = f.read()
 
     pattern = input("Введите строку для поиска:\n")
-    state_count = len(pattern)
+    total_states = len(pattern)
 
     state = 0
-    table = create_table(pattern, file, state_count)
+    table = create_table(pattern, file, total_states)
 
     for i in range(len(file)):
         state = table[file[i]][state]
-        if state == state_count:
-            print("Шаблон найден по индексу", i + 1 - state_count)
+        if state == total_states:
+            print("Шаблон найден по индексу", i + 1 - total_states)
 
 
 if __name__ == "__main__":
