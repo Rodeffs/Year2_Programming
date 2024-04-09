@@ -23,13 +23,34 @@ def polynom_remain(f, g):  # деление многочленов
     return r
 
 
-def main():
-    n = 15  # общее число элементов
-    m = 5  # информационные элементы
-    k = 10  # избыточные элементы
-    polynom = 0b10100110111  # порождающий многочлен
+def bin2dec(bininput):
+    result = 0
 
-    print("Порождающий многочлен:", to_bin(polynom), "\n")
+    for i in range(len(bininput)):
+        result <<= 1
+        result += int(bininput[i])
+
+    return result
+
+
+def main():
+    n = int(input("Введите общее число элементов, n = "))
+    m = int(input("\nВведите число информационных элементов, m = "))
+    k = int(input("\nВведите число избыточных элементов, k = "))
+
+    if n != (m+k):
+        print("\nИсходные данные введены неверно, n != m + k")
+        quit()
+
+    polynom = input("\nВведите порождающий многочлен в двоичной системе: ")
+    polynom = bin2dec(polynom)
+
+    select_d_min = input("\nВведите d min (если пусто, то алгоритм сам посчитает): ")
+
+    if select_d_min == "":
+        d_min = float("inf")
+    else:
+        d_min = int(select_d_min)
 
     # Порождающая матрица имеет m строк и n столбцов, где в каждой строке
     # записывается полином в отражённом виде и сдвигается вправо каждую строку
@@ -43,7 +64,7 @@ def main():
             pol_copy >>= 1
         offset += 1
 
-    print("Порождающая матрица:")
+    print("\nПорождающая матрица:")
     for i in range(0, m):
         row = ""
         for j in range(0, n):
@@ -62,35 +83,38 @@ def main():
     for x in range(1, 2**m):
         multiply = x << k  # (x * 2**k) = (x << k)
         r = polynom_remain(multiply, polynom)
-        coded[x] = [multiply + r, float("inf")]
+        coded[x] = [multiply + r, d_min]
 
-    # Определение минимального расстояния Хемминга:
     keys = list(coded.keys())
     values = list(coded.values())
-    d_min = float("inf")
-    for i in range(len(keys)):
-        current = keys[i]
-        for j in range(i+1, len(keys)):
-            other = keys[j]
-            d = to_bin(coded[current][0] ^ coded[other][0]).count('1')
-            coded[current][1] = min(coded[current][1], d)
-            coded[other][1] = min(coded[other][1], d)
-            d_min = min(d_min, d)
+
+    # Определение минимального расстояния Хемминга, кол-во операций = (n-1)*n/2
+    if d_min == float("inf"):
+        for i in range(len(keys)):
+            current = keys[i]
+            for j in range(i+1, len(keys)):
+                other = keys[j]
+                d = to_bin(coded[current][0] ^ coded[other][0]).count('1')
+                coded[current][1] = min(coded[current][1], d)
+                coded[other][1] = min(coded[other][1], d)
+                d_min = min(d_min, d)
 
     for i in keys:
         initial = to_bin(i) + " " * (m - bits(i))
         result = leading_0(coded[i][0], n)
-        print(f"Для слова {initial} код = {result}; d min = {coded[i][1]}")
+        print(f"Для слова {initial} код = {result}")
+
+    print(f"\nМинимальное расстояние Хемминга d_min = {d_min}\n")
 
     guarantee = int((d_min - 1)/2)
-    print("\nКратность гарантированно исправляемых ошибок:", guarantee, "\n")
+    print(f"Кратность гарантированно исправляемых ошибок: {guarantee}\n")
 
     errors = 0
     for i in range(1, guarantee + 1):
         errors += (fact(n) / (fact(i) * fact(n - i)))  # бином. коэф.
     print("Число различных векторов ошибок, которые можно исправить:", errors)
 
-    error_vector = 0b001010000000001
+    error_vector = 0b010010001
     print("\nВозьмём вектор ошибки:", leading_0(error_vector, n))
 
     wrong_code = coded[1][0] ^ error_vector
@@ -105,7 +129,7 @@ def main():
     #   5) получившийся в итоге список и будет ответом
 
     error_vectors = [error_vector]
-    for i in range(1, len(values)):
+    for i in range(1, len(values)):  # нужно увеличить шаг для больших m
         current = values[i][0]
         wrong_code = wrong_code ^ current
         new_error_vector = wrong_code ^ current
@@ -121,9 +145,7 @@ def main():
     # Эти вектора не могут быть обнаружены, т.к. в них столько много ошибок,
     # что они полностью заменяют одно кодовое слово на другое
     # Эти вектора совпадают с кодовыми словами
-    print("\nВектора ошибок, которые не могут быть обнаружены:")
-    for i in values:
-        print(leading_0(i[0], n))
+    print("\nВектора ошибок, которые не могут быть обнаружены, совпадают с кодовыми словами, см. их вывод")
 
 
 if __name__ == "__main__":
