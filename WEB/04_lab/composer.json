@@ -1,0 +1,19 @@
+{
+    "name": "owner/04_lab",
+    "description": "lab4 for web",
+    "type": "project",
+    "require": {
+        "google/apiclient": "^2.16"
+    },
+    "autoload": {
+        "psr-4": {
+            "Owner\\04Lab\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rodeffs",
+            "email": "guideandplaygamespilex24@gmail.com"
+        }
+    ]
+}
