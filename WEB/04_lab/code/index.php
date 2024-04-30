@@ -48,8 +48,8 @@
 						$service = new Google_Service_Sheets($client);
 
 						$id = "1Pjne_2pugD5LtMJOuF5weDIwgOmH48m6N3tbqd0BaXI";
-						$name = "lab4 table";
-						$table = $service->spreadsheets_values->get($id, $name)->getValues();
+						$sheet = "sheet1";
+						$table = $service->spreadsheets_values->get($id, $sheet)->getValues();
 
 						foreach($table as $row)
 						{

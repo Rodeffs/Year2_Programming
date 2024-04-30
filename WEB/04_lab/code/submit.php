@@ -21,13 +21,13 @@ $client->addScope('https://www.googleapis.com/auth/spreadsheets');
 $service = new Google_Service_Sheets($client);
 
 $id = "1Pjne_2pugD5LtMJOuF5weDIwgOmH48m6N3tbqd0BaXI";
-$name = "lab4 table";
+$sheet = "sheet1";
 $table = [[$category, $email, $title, $content]];
 
 $body = new Google_Service_Sheets_ValueRange(['values' => $table]);
 $params = array('valueInputOption' => 'USER_ENTERED');  
 
-$service->spreadsheets_values->append($id, $name, $body, $params);
+$service->spreadsheets_values->append($id, $sheet, $body, $params);
 
 goBack();
 
