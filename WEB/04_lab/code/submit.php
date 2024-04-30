@@ -20,8 +20,8 @@ $client->setAuthConfig("credentials.json");
 $client->addScope('https://www.googleapis.com/auth/spreadsheets');
 $service = new Google_Service_Sheets($client);
 
-$id = "lab4-web-421921";
-$name = "Table";
+$id = "1Pjne_2pugD5LtMJOuF5weDIwgOmH48m6N3tbqd0BaXI";
+$name = "lab4 table";
 $table = [[$category, $email, $title, $content]];
 
 $body = new Google_Service_Sheets_ValueRange(['values' => $table]);
