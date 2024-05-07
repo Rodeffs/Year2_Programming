@@ -85,6 +85,7 @@ class Flow:
 
         return max_flow
 
+    
     def get_source(self):
         return self.source
 
@@ -103,6 +104,13 @@ class Flow:
                     print(f"    {i} -> {j} = {bandwidth}")
         print()
 
+    def randomize(self):
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.graph[i][j]:  # чтобы не изменить сеть
+                    self.graph[i][j] = int(uniform(100, 1000))
+        self.max_flow = self.ford_fulkerson()
+
 
 def main():
 
@@ -117,29 +125,20 @@ def main():
 
     flow.print_flow()
     
-    source = flow.get_source()
-    print("Исток - вершина под индексом", source, "\n")
+    print("Исток - вершина под индексом", flow.get_source(), "\n")
     
-    sink = flow.get_sink()
-    print("Сток - вершина под индексом", sink, "\n")
+    print("Сток - вершина под индексом", flow.get_sink(), "\n")
 
-    max_flow = flow.get_max_flow()
-    print("Максимальный поток равен", max_flow, "\n")
+    print("Максимальный поток равен", flow.get_max_flow(), "\n")
    
-    # Рандомизация пропускной способности:
-    for i in range(n):
-        for j in range(n):
-            if graph[i][j]:  # чтобы не изменить сеть
-                graph[i][j] = int(uniform(100, 1000))
-
-    flow2 = Flow(graph)
-
     print("--После рандомизации пропускной способности--\n")
 
-    flow2.print_flow()
+    # Рандомизация пропускной способности:
+    flow.randomize()
 
-    max_flow2 = flow2.get_max_flow()
-    print("Максимальный поток теперь равен", max_flow2, "\n")
+    flow.print_flow()
+
+    print("Максимальный поток теперь равен", flow.get_max_flow(), "\n")
 
 
 if __name__ == "__main__":
