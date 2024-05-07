@@ -1,5 +1,35 @@
 from random import uniform
 
+class Edge:
+    def __init__(self, begin, end, bandwidth):
+        self.__begin = begin
+        self.__end = end
+        self.__bandwidth = bandwidth
+
+    @property
+    def begin(self):
+        return self.__begin
+
+    @begin.setter
+    def begin(self, val):
+        self.__begin = val
+
+    @property
+    def end(self):
+        return self.__end
+
+    @end.setter
+    def end(self, val):
+        self.__end = val
+
+    @property
+    def bandwidth(self):
+        return self.__bandwidth
+
+    @bandwidth.setter
+    def bandwidth(self, val):
+        self.__bandwidth = val
+
 
 class Flow:
     def __init__(self, arr):
@@ -9,6 +39,7 @@ class Flow:
         self.source = self.find_source()
         self.sink = self.find_sink()
         self.max_flow = self.ford_fulkerson()
+        self.min_cut = self.find_mincut_with_bfs()
 
     def find_source(self):
         # Исток - вершина, в которую не ведёт ни одна другая
@@ -85,15 +116,41 @@ class Flow:
 
         return max_flow
 
-    
-    def get_source(self):
-        return self.source
+    def try_to_remove(self, arr):
+        flow_val = 0
 
-    def get_sink(self):
-        return self.sink
+        for x in arr:
+            flow_val += self.graph[x[0]][x[1]]
 
-    def get_max_flow(self):
-        return self.max_flow
+        if flow_val == self.max_flow:
+            return True
+
+        return False
+
+
+    def find_mincut_with_bfs(self):  # по теореме Форда-Фулкерсона, пропускная способность мин. разреза = макс. поток
+        # Чтобы не проверять двудольность, я решил просто через поиск в ширину идти от source до sink и пытаться удалить
+        # грани, сумма пропускной способности которых равна максимальному потоку
+        # Плюс по условию сказано найти ОДИН такой разрез, так что пойдёт
+        # Т.к. граф ориентированный, то проверку на посещённые вершины делать не надо
+        queue, cut, previous = [self.source], [], self.source
+
+        while queue:
+            node = queue[0]
+            queue.pop(0)
+
+            if node != self.source:  # лень писать try catch
+                cut.remove((previous, node))
+
+            for j in range(self.n):
+                if self.graph[node][j]:
+                    queue.append(j)
+                    cut.append((node, j))
+
+            if self.try_to_remove(cut):
+                return cut
+
+            previous = node
 
     def print_flow(self):
         print("Сеть (вход -> выход = пропускная способность):")
@@ -110,6 +167,19 @@ class Flow:
                 if self.graph[i][j]:  # чтобы не изменить сеть
                     self.graph[i][j] = int(uniform(100, 1000))
         self.max_flow = self.ford_fulkerson()
+        self.min_cut = self.find_mincut_with_bfs()
+    
+    def get_source(self):
+        return self.source
+
+    def get_sink(self):
+        return self.sink
+
+    def get_max_flow(self):
+        return self.max_flow
+
+    def get_min_cut(self):
+        return self.min_cut
 
 
 def main():
@@ -130,6 +200,13 @@ def main():
     print("Сток - вершина под индексом", flow.get_sink(), "\n")
 
     print("Максимальный поток равен", flow.get_max_flow(), "\n")
+
+    print("Соответствующий ему минимальный разрез:")
+    mincut = flow.get_min_cut()
+    for cut in mincut:
+        x, y = cut[0], cut[1]
+        print(f"    {x} -> {y} = {graph[x][y]}")
+    print()
    
     print("--После рандомизации пропускной способности--\n")
 
@@ -139,6 +216,13 @@ def main():
     flow.print_flow()
 
     print("Максимальный поток теперь равен", flow.get_max_flow(), "\n")
+
+    print("Соответствующий ему минимальный разрез:")
+    mincut = flow.get_min_cut()
+    for cut in mincut:
+        x, y = cut[0], cut[1]
+        print(f"    {x} -> {y} = {graph[x][y]}")
+    print()
 
 
 if __name__ == "__main__":
