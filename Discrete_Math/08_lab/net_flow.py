@@ -131,14 +131,10 @@ class Flow:
         return max_flow
 
     def remove_from_list(self, arr, node):  # утобы не пытаться разрезать грани, ведущие в эту вершину
-        print("before removing", node)
-        print(arr)
         copy = [list(arr[i]) for i in range(len(arr))]  # чтобы не изменить исходный граф
         for elem in copy:
             if elem[1] == node:
                 arr.remove(elem)
-        print("after")
-        print(arr)
 
     def try_to_remove(self, arr):
         flow_val = 0
@@ -188,6 +184,7 @@ class Flow:
                 if self.graph[i][j]:  # чтобы не изменить сеть
                     self.graph[i][j] = int(uniform(100, 1000))
         self.max_flow = self.ford_fulkerson()
+        self.min_cut = self.find_mincut_with_bfs()
     
     def get_source(self):
         return self.source
@@ -236,12 +233,14 @@ def main():
     flow.print_flow()
 
     print("Максимальный поток теперь равен", flow.get_max_flow(), "\n")
-
-    print("Соответствующий ему минимальный разрез:")
-    for cut in mincut:
-        x, y = cut[0], cut[1]
-        print(f"    {x} -> {y} = {graph[x][y]}")
-    print()
+    
+    mincut = flow.get_min_cut()
+    if mincut:
+        print("Соответствующий ему минимальный разрез:")
+        for cut in mincut:
+            x, y = cut[0], cut[1]
+            print(f"    {x} -> {y} = {graph[x][y]}")
+        print()
 
 
 if __name__ == "__main__":
