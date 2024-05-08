@@ -1,5 +1,6 @@
 from random import uniform
 
+
 class Edge:
     def __init__(self, begin, end, bandwidth):
         self.__begin = begin
@@ -33,7 +34,6 @@ class Edge:
 
 class Flow:
     def __init__(self, arr):
-        self.paths = []
         self.graph = arr
         self.n = len(arr)
         self.source = self.find_source()
@@ -77,80 +77,101 @@ class Flow:
                 sink = i
                 return sink
 
-    def dfs(self, node, visited, path):
-        path_extended = path + [node]
-
-        if node == self.sink:
-            self.paths.append(path_extended)
-            return
-
-        visited_extended = visited + [node]
-        for i in range(self.n):
-            if self.graph[node][i] and i not in visited_extended:
-                self.dfs(i, visited_extended, path_extended)
+    def bfs(self, parent, net):
+        # Помечаем все вершины как не посещённые
+        visited = [False]*(self.n)
+ 
+        # Помечаем исток как посещённый
+        queue = [self.source]
+        visited[self.source] = True
+ 
+        while queue:
+            u = queue.pop(0)
+ 
+            # Находим прилегающие вершины к вершине u и посещаем их, если ещё этого не сделали
+            for ind, val in enumerate(net[u]):
+                if visited[ind] == False and val > 0:
+                    # Если есть связь с sink, то сразу оканчиваем bfs
+                    queue.append(ind)
+                    visited[ind] = True
+                    parent[ind] = u
+                    if ind == self.sink:
+                        return True
+ 
+        return False
 
     def ford_fulkerson(self):
         max_flow = 0  # изначально значение потока равно 0
         net = [list(self.graph[i]) for i in range(self.n)]  # чтобы не изменить исходный граф
         
-        # Используем поиск в глубину для нахождения пути:
-        self.dfs(self.source, [], [])
+        # Этот массив заполняем в bfs (поиск в ширину) для сохранения путей
+        parent = [-1]*(self.n)
 
         # Сам алгоритм: проходимся по каждому пути в графе, уменьшая поток по нему
         # на значение минимальной пропускной способности, а обратный поток наоборот,
         # увеличиваем на это значение. Это нужно затем, чтобы можно было разгрузить
         # ребро, если поток его перегрузит
-        for path in self.paths:
-            max_increase = float("inf")
-
-            for i in range(len(path)-1):
-                v0, v1 = path[i], path[i+1]
-                max_increase = min(max_increase, net[v0][v1])
-
-            for i in range(len(path)-1):
-                v0, v1 = path[i], path[i+1]
-                net[v0][v1] -= max_increase
-                net[v1][v0] += max_increase
-
-            max_flow += max_increase
+        while self.bfs(parent, net):
+            max_increase = float("Inf")
+            
+            current = self.sink
+            while(current !=  self.source):
+                max_increase = min(max_increase, net[parent[current]][current])
+                current = parent[current]
+ 
+            max_flow +=  max_increase
+ 
+            current = self.sink
+            while(current !=  self.source):
+                previous = parent[current]
+                net[previous][current] -= max_increase
+                net[current][previous] += max_increase
+                current = parent[current]
 
         return max_flow
+
+    def remove_from_list(self, arr, node):  # утобы не пытаться разрезать грани, ведущие в эту вершину
+        print("before removing", node)
+        print(arr)
+        copy = [list(arr[i]) for i in range(len(arr))]  # чтобы не изменить исходный граф
+        for elem in copy:
+            if elem[1] == node:
+                arr.remove(elem)
+        print("after")
+        print(arr)
 
     def try_to_remove(self, arr):
         flow_val = 0
 
         for x in arr:
             flow_val += self.graph[x[0]][x[1]]
-
+        
         if flow_val == self.max_flow:
             return True
 
         return False
-
 
     def find_mincut_with_bfs(self):  # по теореме Форда-Фулкерсона, пропускная способность мин. разреза = макс. поток
         # Чтобы не проверять двудольность, я решил просто через поиск в ширину идти от source до sink и пытаться удалить
         # грани, сумма пропускной способности которых равна максимальному потоку
         # Плюс по условию сказано найти ОДИН такой разрез, так что пойдёт
         # Т.к. граф ориентированный, то проверку на посещённые вершины делать не надо
-        queue, cut, previous = [self.source], [], self.source
+        queue, cut = [self.source], []
 
         while queue:
             node = queue[0]
             queue.pop(0)
-
-            if node != self.source:  # лень писать try catch
-                cut.remove((previous, node))
+            self.remove_from_list(cut, node)
 
             for j in range(self.n):
                 if self.graph[node][j]:
                     queue.append(j)
-                    cut.append((node, j))
+                    potential_cut = [node, j]
+                    if potential_cut not in cut:
+                        cut.append([node, j])
 
             if self.try_to_remove(cut):
                 return cut
-
-            previous = node
 
     def print_flow(self):
         print("Сеть (вход -> выход = пропускная способность):")
@@ -167,7 +188,6 @@ class Flow:
                 if self.graph[i][j]:  # чтобы не изменить сеть
                     self.graph[i][j] = int(uniform(100, 1000))
         self.max_flow = self.ford_fulkerson()
-        self.min_cut = self.find_mincut_with_bfs()
     
     def get_source(self):
         return self.source
@@ -218,7 +238,6 @@ def main():
     print("Максимальный поток теперь равен", flow.get_max_flow(), "\n")
 
     print("Соответствующий ему минимальный разрез:")
-    mincut = flow.get_min_cut()
     for cut in mincut:
         x, y = cut[0], cut[1]
         print(f"    {x} -> {y} = {graph[x][y]}")
