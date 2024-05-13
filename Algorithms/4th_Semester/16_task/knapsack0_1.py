@@ -40,7 +40,7 @@ def main():
     
     for i in range(1, n+1):
         for w in range(max_weight+1):
-            cur = items[i-1] # чтобы не пропустить предметов и алгоритм работал
+            cur = items[i-1] # чтобы не пропустить предметов
             if cur.weight > w:
                 backpack[i][w] = backpack[i-1][w]
             else:
