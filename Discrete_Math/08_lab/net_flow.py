@@ -56,10 +56,8 @@ class Flow:
 
             if potential:
                 source = i
-                break
+                return source
 
-        return source
-    
     def find_sink(self):
         # Сток - вершина, которая не ведёт ни в какую другую
         sink = 0
@@ -167,7 +165,9 @@ class Flow:
                         cut.append([node, j])
 
             if self.try_to_remove(cut):
-                return cut
+                break  # да, можно было тут return прописать, но иначе pyright ругается
+
+        return cut
 
     def print_flow(self):
         print("Сеть (вход -> выход = пропускная способность):")
