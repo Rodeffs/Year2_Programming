@@ -39,7 +39,6 @@ class Flow:
         self.source = self.find_source()
         self.sink = self.find_sink()
         self.max_flow = self.ford_fulkerson()
-        self.min_cut = self.find_mincut_with_bfs()
 
     def find_source(self):
         # Исток - вершина, в которую не ведёт ни одна другая
@@ -196,6 +195,7 @@ class Flow:
         return self.max_flow
 
     def get_min_cut(self):
+        self.min_cut = self.find_mincut_with_bfs()
         return self.min_cut
 
 
