@@ -4,9 +4,8 @@ class Flow:  # скопировано из 8 лабы
         self.n = len(arr)
         self.source = source
         self.sink = sink
-        self.max_bipart = 0
     
-    def dfs(self, curver, curpath): 
+    def dfs_ford_fulk(self, curver, curpath): 
         for i in range(self.n):
             if self.graph[curver][i]:
                 newpath = curpath + [i]
@@ -24,10 +23,71 @@ class Flow:  # скопировано из 8 лабы
                             self.graph[newpath[j]][newpath[j+1]] = 0
                         self.max_bipart += 1
                 else:
-                    self.dfs(i, newpath)
+                    self.dfs_ford_fulk(i, newpath)
 
-    def get_max_bipart(self):
-        self.dfs(self.source, [self.source])
+    def ford_fulkerson(self):
+        self.max_bipart = 0
+        self.dfs_ford_fulk(self.source, [self.source])
+        return self.max_bipart
+
+    def bfs_hop_karp(self):
+        queue = []
+
+        for u in range(1, self.left_vert+1):
+            if self.leftside[u] == 0:
+                self.distance[u] = 0
+                queue.append(u)
+            else:
+                self.distance[u] = float("inf")
+
+        self.distance[0] = float("inf")
+
+        while queue:
+            u = queue[0]
+            queue.pop(0)
+
+            if self.distance[u] < self.distance[0]:
+                for v in range(self.n):
+                    if self.graph[u][v]:
+                        if self.distance[self.rightside[v]] == float("inf"):
+                            self.distance[self.rightside[v]] = self.distance[u] + 1
+                            queue.append(self.rightside[v])
+
+        return self.distance[0] != float("inf")
+ 
+    def dfs_hop_karp(self, u):
+        if u != 0:
+            for v in range(self.n):
+                if self.graph[u][v]:
+                    if self.distance[self.rightside[v]] == self.distance[u] + 1:
+                        if self.dfs_hop_karp(self.rightside[v]):
+                            self.rightside[v] = u
+                            self.leftside[u] = v
+                            return True
+
+            self.distance[u] = float("inf")
+            return False
+
+        return True
+
+    def hopcroft_karp(self, marking):
+        self.max_bipart, self.left_vert = 0, 0
+
+        for i in marking:
+            if i == 2:
+                self.left_vert += 1
+
+        self.right_vert = len(marking) - self.left_vert
+
+        self.leftside = [0 for i in range(self.left_vert + 1)]  # пара, где элемент в левой части
+        self.rightside = [0 for i in range(self.right_vert + 1)]  # пара, где элемент в правой части
+        self.distance = [0 for i in range(self.left_vert + 1)]  # расстояние вершин слева
+
+        while self.bfs_hop_karp():
+            for u in range(1, self.left_vert+1):
+                if self.leftside[u] == 0 and self.dfs_hop_karp(u):
+                    self.max_bipart += 1
+
         return self.max_bipart
 
 
@@ -107,12 +167,12 @@ def main():
     
     # Теперь считаем кол-во уникальных путей (т.е. рёбра не повторяются) от source в sink
     flow = Flow(graph, source, sink)
-    print("\nМаксимальное паросочетание", flow.get_max_bipart())
+    print("\nМаксимальное паросочетание", flow.ford_fulkerson())
 
     # Другой алгоритм:
     flow = Flow(graph, source, sink)
 
-    # https://www.geeksforgeeks.org/hopcroft-karp-algorithm-for-maximum-matching-set-2-implementation/
+    print("\nМаксимальное паросочетание", flow.hopcroft_karp(marking))
 
 
 if __name__ == "__main__":
