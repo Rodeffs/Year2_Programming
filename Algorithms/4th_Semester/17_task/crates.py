@@ -7,8 +7,7 @@ def main():
     capacity = float(input("Введите вместимость одного ящика: "))
     items, crates = [], []
 
-    print("Введите веса предметов:")
-    weight = input()
+    weight = input("Введите веса предметов:\n")
     while weight != "":
         temp = float(weight)
         if temp > capacity:
@@ -46,8 +45,9 @@ def main():
         print("Распределение предметов по ящикам:")
         for i in range(len(crates)):
             print(f"Ящик {i+1}: вес = {capacity - crates[i]}")
+        return
 
-    print("Всего ящиков =", len(crates))
+    print("Ни один предмет не влез ни в один ящик")
 
 
 if __name__ == "__main__":
