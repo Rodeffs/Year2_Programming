@@ -1,37 +1,6 @@
 from random import uniform
 
 
-class Edge:
-    def __init__(self, begin, end, bandwidth):
-        self.__begin = begin
-        self.__end = end
-        self.__bandwidth = bandwidth
-
-    @property
-    def begin(self):
-        return self.__begin
-
-    @begin.setter
-    def begin(self, val):
-        self.__begin = val
-
-    @property
-    def end(self):
-        return self.__end
-
-    @end.setter
-    def end(self, val):
-        self.__end = val
-
-    @property
-    def bandwidth(self):
-        return self.__bandwidth
-
-    @bandwidth.setter
-    def bandwidth(self, val):
-        self.__bandwidth = val
-
-
 class Flow:
     def __init__(self, arr):
         self.graph = arr
