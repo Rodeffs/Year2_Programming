@@ -1,25 +1,34 @@
 """
-Суть задачи: дан целочисленный промежуток: [a, b], b > a; и дано число x. Нужно выписать числа из промежутка [a, b] сумма которых равна x
+Суть задачи: даны последовательность чисел и число x. Нужно выписать числа из этой последовательности, сумма которых равна x
 """
 
 def main():
-    x = int(input("Введите x, которое нужно получить суммой чисел из промежутка [a, b]: "))
-    a = int(input("Введите a, при условии b > a: "))
-    b = int(input("Введите b, при условии b > a: "))
+    array = []
+    entry = input("Введите последовательность чисел:\n")
+    while entry != "":
+        array.append(int(entry))
+        entry = input()
 
-    for offset in range(b):
+    x = int(input("Введите число, которое нужно получить из последовательности: "))
+
+    # Сортируем в порядке неубывания:
+    array.sort(reverse=True)
+    
+    n = len(array)
+    for offset in range(n):
         int_sum, cursum = [], 0
-        for number in range(b - offset, a - 1, -1):
+        for i in range(offset, n):
+            number = array[i]
             if (cursum + number) <= x:
                 cursum += number
                 int_sum.append(number)
             if cursum == x:
-                print(f"Сумма этих чисел из промежутка [{a}, {b}] даст {x}:")
-                for entry in int_sum:
-                    print(entry)
+                print("Сумма следующих чисел из последовательности даст", x)
+                for sumnum in int_sum:
+                    print(sumnum)
                 return
 
-    print(f"Из данного промежутка получить {x} нельзя")
+    print(f"Из данной последовательности получить {x} нельзя")
 
 
 if __name__ == "__main__":
