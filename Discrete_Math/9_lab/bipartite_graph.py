@@ -1,6 +1,6 @@
 class Flow:  # скопировано из 8 лабы
     def __init__(self, arr, source, sink):
-        self.graph = [list(arr[i]) for i in range(len(arr))]  # чтобы не изменить исходный граф
+        self.graph = arr
         self.n = len(arr)
         self.source = source
         self.sink = sink
@@ -30,15 +30,27 @@ class Flow:  # скопировано из 8 лабы
         self.dfs_ford_fulk(self.source, [self.source])
         return self.max_bipart
 
+    def set_graph(self, arr):
+        self.graph = arr
+        self.n = len(arr)
+
+    def get_pair(self, vert1, side):
+        for vert2 in range(self.n):
+            if side == "left" and self.pairs[vert1][vert2] != -1:
+                return self.pairs[vert1][vert2]
+            if side == "right" and self.pairs[vert2][vert1] != -1:
+                return self.pairs[vert2][vert1]
+        return -1
+
     def bfs_hop_karp(self):
         queue = []
 
-        for u in range(1, self.left_vert+1):
-            if self.leftside[u] == 0:
+        for u in range(self.n):
+            if self.get_pair(u, "left") == -1:
                 self.distance[u] = 0
                 queue.append(u)
             else:
-                self.distance[u] = float("inf")
+                self.distance[u+1] = float("inf")
 
         self.distance[0] = float("inf")
 
@@ -46,46 +58,48 @@ class Flow:  # скопировано из 8 лабы
             u = queue[0]
             queue.pop(0)
 
-            if self.distance[u] < self.distance[0]:
+            if self.distance[u+1] < self.distance[0]:
                 for v in range(self.n):
-                    if self.graph[u][v]:
-                        if self.distance[self.rightside[v]] == float("inf"):
-                            self.distance[self.rightside[v]] = self.distance[u] + 1
-                            queue.append(self.rightside[v])
+                    leftpair = self.get_pair(v, "right")
+                    if self.graph[u][v] and leftpair != -1:
+                        if self.distance[leftpair + 1] == float("inf"):
+                            self.distance[leftpair + 1] = self.distance[u + 1] + 1
+                            queue.append(leftpair)
 
         return self.distance[0] != float("inf")
  
     def dfs_hop_karp(self, u):
-        if u != 0:
+        if u != -1:
             for v in range(self.n):
-                if self.graph[u][v]:
-                    if self.distance[self.rightside[v]] == self.distance[u] + 1:
-                        if self.dfs_hop_karp(self.rightside[v]):
-                            self.rightside[v] = u
-                            self.leftside[u] = v
+                leftpair = self.get_pair(v, "right")
+                if self.graph[u][v] and leftpair != -1:
+                    if self.distance[leftpair + 1] == self.distance[u + 1] + 1:
+                        if self.dfs_hop_karp(leftpair):
+                            self.pairs[v][leftpair] = u
+                            self.pairs[leftpair][v] = v
                             return True
 
-            self.distance[u] = float("inf")
+            self.distance[u + 1] = float("inf")
             return False
 
         return True
 
     def hopcroft_karp(self, marking):
-        self.max_bipart, self.left_vert = 0, 0
+        self.nax_bipart = 0
+        n = self.n
+        self.marking = marking
 
-        for i in marking:
-            if i == 2:
-                self.left_vert += 1
+        # -1 значит, что это вершина не левая
+        self.pairs = [[-1 for i in range(n)] for j in range(n)]  # паросочетания
+        self.distance = [-1 for i in range(n+1)]  # расстояние для вершин слева
 
-        self.right_vert = len(marking) - self.left_vert
-
-        self.leftside = [0 for i in range(self.left_vert + 1)]  # пара, где элемент в левой части
-        self.rightside = [0 for i in range(self.right_vert + 1)]  # пара, где элемент в правой части
-        self.distance = [0 for i in range(self.left_vert + 1)]  # расстояние вершин слева
+        for i in range(n):
+            if marking[i] == 2:
+                self.distance[i+1] = 0  # значит, вершина левая
 
         while self.bfs_hop_karp():
-            for u in range(1, self.left_vert+1):
-                if self.leftside[u] == 0 and self.dfs_hop_karp(u):
+            for u in range(n):
+                if self.get_pair(u, "left") == -1 and self.dfs_hop_karp(u):
                     self.max_bipart += 1
 
         return self.max_bipart
@@ -153,6 +167,9 @@ def main():
                     graph[j][i] = 0
 
     # Теперь создаём исток, который ведёт во все левые вершины, и сток, в который ведут все правые 
+
+    graph2 = [list(graph[i]) for i in range(n)]  # чтобы не изменить исходный граф
+
     source, sink = n, n + 1
     for i in range(n):
         graph[i] += [0, 0]
@@ -170,7 +187,7 @@ def main():
     print("\nМаксимальное паросочетание", flow.ford_fulkerson())
 
     # Другой алгоритм:
-    flow = Flow(graph, source, sink)
+    flow.set_graph(graph2)
 
     print("\nМаксимальное паросочетание", flow.hopcroft_karp(marking))
 
