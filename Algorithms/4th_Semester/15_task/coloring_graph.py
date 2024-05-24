@@ -32,12 +32,9 @@ def main():
     colors = [0 for i in range(n)]  # цвета - числа
 
     max_colors = 1  # перебираем максимальное кол-во цветов, т.е. хроматическое число
-    while True:
-        if coloring(graph, max_colors, colors, 0, n):
-            break
-        else:
-            max_colors += 1
-            colors = [0 for i in range(n)]
+    while not coloring(graph, max_colors, colors, 0, n):
+        max_colors += 1
+        colors = [0 for i in range(n)]
 
     print("Хроматическое число", max_colors)
     print("Раскраска:")
