@@ -40,27 +40,19 @@
 				</thead>
 				<tbody>
 					<?php
-						function output($filePath, $toOutput) { // рекурсивное считывание
-							$directories = array_slice(scandir($filePath), 2); // т.к. первые два элемента - это . и ..
+                        $mysqli = new mysqli("localhost", "root", "password", "web");
 
-							foreach ($directories as $dir) {
-								$nextFilePath = $filePath."/{$dir}";
-								
-								if (mime_content_type($nextFilePath) == "text/plain") { // проверка на текстовый файл
-									$title = substr($dir, 0, -4); // чтобы убрать .txt с конца
-									$text = nl2br(file_get_contents($nextFilePath)); // nl2br нужно, чтобы правильно отображать \n
+                        if ($result = $mysqli->query("SELECT * FROM ad ORDER BY created DESC")) {
 
-									echo "{$toOutput}<td>{$title}</td><td>{$text}</td></tr>";
-								}
-								else {
-									output($nextFilePath, $toOutput."<td>{$dir}</td>");
-								}	
-							}
-						}
-						
-						if (is_dir("categories")) {
-							output("categories", "<tr>");
-						}
+                            while ($row = $result->fetch_array()) {
+                                echo "<tr>{$row['category']}</td><td>{$row['email']}</td><td>{$row['title']}</td><td>{$row['content']}</td></tr>";
+                            }
+
+                            $result->close();
+                        }
+
+                        $mysqli->close();
+
 					?>
 				</tbody>	
 			</table>
