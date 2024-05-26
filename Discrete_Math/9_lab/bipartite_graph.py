@@ -1,3 +1,64 @@
+class BipGraph:
+    def __init__(self, left, right):
+        self.__left = left  # вершины слева
+        self.__right = right  # вершины справа
+        self.__adj = [[] for i in range(right+1)]  # пары для левых вершин
+ 
+    def addEdge(self, u, v):
+        self.__adj[u].append(v) 
+ 
+    def bfs(self):  # если есть добавочный путь, то истина, иначе ложь
+        queue = []
+
+        for u in range(1, self.__left+1):
+            if self.__pairForLeft[u] == 0:
+                self.__dist[u] = 0
+                queue.append(u)
+            else:
+                self.__dist[u] = float("inf")
+
+        self.__dist[0] = float("inf")
+
+        while queue:
+            u = queue[0]
+            queue.pop(0)
+
+            if self.__dist[u] < self.__dist[0]:
+                for v in self.__adj[u]:
+                    if self.__dist[self.__pairForRight[v]] == float("inf"):
+                        self.__dist[self.__pairForRight[v]] = self.__dist[u] + 1
+                        queue.append(self.__pairForRight[v])
+
+        return self.__dist[0] != float("inf")
+ 
+    def dfs(self, u):
+        if u != 0:
+            for v in self.__adj[u]:
+                if self.__dist[self.__pairForRight[v]] == self.__dist[u] + 1:
+                    if self.dfs(self.__pairForRight[v]):
+                        self.__pairForRight[v] = u
+                        self.__pairForLeft[u] = v
+                        return True
+
+            self.__dist[u] = float("inf")
+            return False
+
+        return True
+ 
+    def hopcroftKarp(self):
+        self.__pairForLeft = [0 for _ in range(self.__left+1)]  # пара для каждой вершины слева
+        self.__pairForRight = [0 for _ in range(self.__right+1)]  # пара для каждой вершины справа
+        self.__dist = [0 for _ in range(self.__left+1)]  # расстояния для левых вершин
+        result = 0
+ 
+        while self.bfs():
+            for u in range(1, self.__left+1):
+                if self.__pairForLeft[u] == 0 and self.dfs(u):
+                    result += 1
+
+        return result
+ 
+
 class Flow:  # скопировано из 8 лабы
     def __init__(self, arr, source, sink):
         self.graph = arr
@@ -5,7 +66,7 @@ class Flow:  # скопировано из 8 лабы
         self.source = source
         self.sink = sink
     
-    def dfs_ford_fulk(self, curver, curpath): 
+    def dfs(self, curver, curpath): 
         for i in range(self.n):
             if self.graph[curver][i]:
                 newpath = curpath + [i]
@@ -23,84 +84,43 @@ class Flow:  # скопировано из 8 лабы
                             self.graph[newpath[j]][newpath[j+1]] = 0
                         self.max_bipart += 1
                 else:
-                    self.dfs_ford_fulk(i, newpath)
+                    self.dfs(i, newpath)
 
     def ford_fulkerson(self):
         self.max_bipart = 0
-        self.dfs_ford_fulk(self.source, [self.source])
+        self.dfs(self.source, [self.source])
         return self.max_bipart
-
+    
     def set_graph(self, arr):
         self.graph = arr
         self.n = len(arr)
-
-    def get_pair(self, vert1, side):
-        for vert2 in range(self.n):
-            if side == "left" and self.pairs[vert1][vert2] != -1:
-                return self.pairs[vert1][vert2]
-            if side == "right" and self.pairs[vert2][vert1] != -1:
-                return self.pairs[vert2][vert1]
-        return -1
-
-    def bfs_hop_karp(self):
-        queue = []
-
-        for u in range(self.n):
-            if self.get_pair(u, "left") == -1:
-                self.distance[u] = 0
-                queue.append(u)
-            else:
-                self.distance[u+1] = float("inf")
-
-        self.distance[0] = float("inf")
-
-        while queue:
-            u = queue[0]
-            queue.pop(0)
-
-            if self.distance[u+1] < self.distance[0]:
-                for v in range(self.n):
-                    leftpair = self.get_pair(v, "right")
-                    if self.graph[u][v] and leftpair != -1:
-                        if self.distance[leftpair + 1] == float("inf"):
-                            self.distance[leftpair + 1] = self.distance[u + 1] + 1
-                            queue.append(leftpair)
-
-        return self.distance[0] != float("inf")
- 
-    def dfs_hop_karp(self, u):
-        if u != -1:
-            for v in range(self.n):
-                leftpair = self.get_pair(v, "right")
-                if self.graph[u][v] and leftpair != -1:
-                    if self.distance[leftpair + 1] == self.distance[u + 1] + 1:
-                        if self.dfs_hop_karp(leftpair):
-                            self.pairs[v][leftpair] = u
-                            self.pairs[leftpair][v] = v
-                            return True
-
-            self.distance[u + 1] = float("inf")
-            return False
-
-        return True
+        self.max_bipart = 0
 
     def hopcroft_karp(self, marking):
-        self.nax_bipart = 0
-        n = self.n
-        self.marking = marking
+        left_count, right_count = 0, 0
 
-        # -1 значит, что это вершина не левая
-        self.pairs = [[-1 for i in range(n)] for j in range(n)]  # паросочетания
-        self.distance = [-1 for i in range(n+1)]  # расстояние для вершин слева
+        for i in marking:
+            if i == 2:
+                left_count += 1
+            elif i == 1:
+                right_count += 1
 
-        for i in range(n):
+        bi_graph = BipGraph(left_count, right_count)
+        
+        left_vert, right_vert = 0, 0
+        for i in range(self.n):
             if marking[i] == 2:
-                self.distance[i+1] = 0  # значит, вершина левая
+                left_vert += 1
 
-        while self.bfs_hop_karp():
-            for u in range(n):
-                if self.get_pair(u, "left") == -1 and self.dfs_hop_karp(u):
-                    self.max_bipart += 1
+            for j in range(self.n):
+                if marking[j] == 1:
+                    right_vert += 1
+                if self.graph[i][j]:
+                    bi_graph.addEdge(left_vert, right_vert)
+
+            right_vert = 0
+
+        self.max_bipart = bi_graph.hopcroftKarp()
 
         return self.max_bipart
 
@@ -166,9 +186,9 @@ def main():
                     print(f"    {i} --- {j}")
                     graph[j][i] = 0
 
-    # Теперь создаём исток, который ведёт во все левые вершины, и сток, в который ведут все правые 
-
     graph2 = [list(graph[i]) for i in range(n)]  # чтобы не изменить исходный граф
+
+    # Теперь создаём исток, который ведёт во все левые вершины, и сток, в который ведут все правые
 
     source, sink = n, n + 1
     for i in range(n):
