@@ -1,105 +1,111 @@
 class BipGraph:
     def __init__(self, left, right):
-        self.__left = left  # вершины слева
-        self.__right = right  # вершины справа
-        self.__adj = [[] for i in range(right+1)]  # пары для левых вершин
+        self.left = left  # вершины слева
+        self.right = right  # вершины справа
+        self.adjacent = [[] for i in range(right+1)]  # пары для левых вершин
  
     def addEdge(self, u, v):
-        self.__adj[u].append(v) 
+        self.adjacent[u].append(v) 
  
     def bfs(self):  # если есть добавочный путь, то истина, иначе ложь
         queue = []
 
-        for u in range(1, self.__left+1):
-            if self.__pairForLeft[u] == 0:
-                self.__dist[u] = 0
+        for u in range(1, self.left+1):
+            if self.pair_for_left[u] == 0:
+                self.distance[u] = 0
                 queue.append(u)
             else:
-                self.__dist[u] = float("inf")
+                self.distance[u] = float("inf")
 
-        self.__dist[0] = float("inf")
+        self.distance[0] = float("inf")
 
         while queue:
             u = queue[0]
             queue.pop(0)
 
-            if self.__dist[u] < self.__dist[0]:
-                for v in self.__adj[u]:
-                    if self.__dist[self.__pairForRight[v]] == float("inf"):
-                        self.__dist[self.__pairForRight[v]] = self.__dist[u] + 1
-                        queue.append(self.__pairForRight[v])
+            if self.distance[u] < self.distance[0]:
+                for v in self.adjacent[u]:
+                    if self.distance[self.pair_for_right[v]] == float("inf"):
+                        self.distance[self.pair_for_right[v]] = self.distance[u] + 1
+                        queue.append(self.pair_for_right[v])
 
-        return self.__dist[0] != float("inf")
+        return self.distance[0] != float("inf")
  
     def dfs(self, u):
         if u != 0:
-            for v in self.__adj[u]:
-                if self.__dist[self.__pairForRight[v]] == self.__dist[u] + 1:
-                    if self.dfs(self.__pairForRight[v]):
-                        self.__pairForRight[v] = u
-                        self.__pairForLeft[u] = v
+            for v in self.adjacent[u]:
+                if self.distance[self.pair_for_right[v]] == self.distance[u] + 1:
+                    if self.dfs(self.pair_for_right[v]):
+                        self.pair_for_right[v] = u
+                        self.pair_for_left[u] = v
                         return True
 
-            self.__dist[u] = float("inf")
+            self.distance[u] = float("inf")
             return False
 
         return True
  
     def hopcroftKarp(self):
-        self.__pairForLeft = [0 for _ in range(self.__left+1)]  # пара для каждой вершины слева
-        self.__pairForRight = [0 for _ in range(self.__right+1)]  # пара для каждой вершины справа
-        self.__dist = [0 for _ in range(self.__left+1)]  # расстояния для левых вершин
+        self.pair_for_left = [0 for _ in range(self.left+1)]  # пара для каждой вершины слева
+        self.pair_for_right = [0 for _ in range(self.right+1)]  # пара для каждой вершины справа
+        self.distance = [0 for _ in range(self.left+1)]  # расстояния для левых вершин
         result = 0
  
         while self.bfs():
-            for u in range(1, self.__left+1):
-                if self.__pairForLeft[u] == 0 and self.dfs(u):
+            for u in range(1, self.left+1):
+                if self.pair_for_left[u] == 0 and self.dfs(u):
                     result += 1
 
         return result
  
 
-class Flow:  # скопировано из 8 лабы
-    def __init__(self, arr, source, sink):
+class Flow:  # скопировано из 8 лабы с нужными изменениями
+    def __init__(self, arr, marking):
         self.graph = arr
         self.n = len(arr)
-        self.source = source
-        self.sink = sink
+        self.marking = marking
     
-    def dfs(self, curver, curpath): 
-        for i in range(self.n):
-            if self.graph[curver][i]:
-                newpath = curpath + [i]
+    def dfs(self, left, mathes_for_right, checked, right_vert):
+        for right in right_vert:  # подбираем пару, проверяя все правые вершины
+            if self.graph[left][right] and not checked[right]:  # если есть путь и эту правую вершину ещё не проверяли
+                checked[right] = True  # то помечаем её как проверенную
+                
+                # Если этой правой вершине ещё не назначена пара, то теперь левая ей будет
+                # Однако, может возникнуть ситуация, что этой правой вершине уже назначена какая-нибудь
+                # левая вершина, которая в свою очередь может ещё иметь другую пару. Для этого и нужно второе условие, оно проверит, возможно ли для сей левой вершины найти другую пару и если да, то так и делаем
+                if mathes_for_right[right] == -1 or self.dfs(mathes_for_right[right], mathes_for_right, checked, right_vert):
+                    mathes_for_right[right] = left
+                    return True
+        return False
 
-                if i == self.sink:
-                    valid_path = True
-
-                    for j in range(len(newpath)-1):
-                        if not self.graph[newpath[j]][newpath[j+1]]:
-                            valid_path = False
-                            break
-
-                    if valid_path:
-                        for j in range(len(newpath)-1):
-                            self.graph[newpath[j]][newpath[j+1]] = 0
-                        self.max_bipart += 1
-                else:
-                    self.dfs(i, newpath)
 
     def ford_fulkerson(self):
-        self.max_bipart = 0
-        self.dfs(self.source, [self.source])
-        return self.max_bipart
-    
-    def set_graph(self, arr):
-        self.graph = arr
-        self.n = len(arr)
+        left_vert, right_vert = [], []
         self.max_bipart = 0
 
-    def hopcroft_karp(self, marking):
+        for i in range(self.n):
+            if self.marking[i] == 1:
+                right_vert.append(i)
+            elif self.marking[i] == 2:
+                left_vert.append(i)
+
+        mathes_for_right = [-1 for i in range(self.n)]  # пары для правых вершин
+
+        print(len(left_vert), len(right_vert))
+
+        for i in left_vert:
+            checked = [False for j in range(self.n)]  # изначально для левой вершины пока не проверена ни одна правая
+
+            if self.dfs(i, mathes_for_right, checked, right_vert):
+                self.max_bipart += 1
+
+        return self.max_bipart
+
+    def hopcroft_karp(self):
+        self.max_bipart = 0
         left_count, right_count = 0, 0
 
-        for i in marking:
+        for i in self.marking:
             if i == 2:
                 left_count += 1
             elif i == 1:
@@ -109,11 +115,11 @@ class Flow:  # скопировано из 8 лабы
         
         left_vert, right_vert = 0, 0
         for i in range(self.n):
-            if marking[i] == 2:
+            if self.marking[i] == 2:
                 left_vert += 1
 
             for j in range(self.n):
-                if marking[j] == 1:
+                if self.marking[j] == 1:
                     right_vert += 1
                 if self.graph[i][j]:
                     bi_graph.addEdge(left_vert, right_vert)
@@ -176,7 +182,7 @@ def main():
     # Сначала делаем граф неориентированным
     make_non_oriented(graph, n)
 
-    # Выводим граф и заодно делаем его ориентированным для алгоритма Форда-Фулкерсона
+    # Выводим граф и заодно делаем его снова ориентированным
     marking = bipartite(graph, n)
     print("Двудольный граф:")
     for i in range(n):
@@ -186,30 +192,11 @@ def main():
                     print(f"    {i} --- {j}")
                     graph[j][i] = 0
 
-    graph2 = [list(graph[i]) for i in range(n)]  # чтобы не изменить исходный граф
+    flow = Flow(graph, marking)
 
-    # Теперь создаём исток, который ведёт во все левые вершины, и сток, в который ведут все правые
+    print("\nМаксимальное паросочетание алгоритмом Форда-Фулкерсона:", flow.ford_fulkerson())
 
-    source, sink = n, n + 1
-    for i in range(n):
-        graph[i] += [0, 0]
-    graph.append([0 for i in range(n+2)])
-    graph.append([0 for i in range(n+2)])
-
-    for i in range(n):
-        if marking[i] == 1:
-            graph[i][sink] = 1
-        if marking[i] == 2:
-            graph[source][i] = 1
-    
-    # Теперь считаем кол-во уникальных путей (т.е. рёбра не повторяются) от source в sink
-    flow = Flow(graph, source, sink)
-    print("\nМаксимальное паросочетание", flow.ford_fulkerson())
-
-    # Другой алгоритм:
-    flow.set_graph(graph2)
-
-    print("\nМаксимальное паросочетание", flow.hopcroft_karp(marking))
+    print("\nМаксимальное паросочетание алгоритмом Хопкрофта-Карпа:", flow.hopcroft_karp())
 
 
 if __name__ == "__main__":
