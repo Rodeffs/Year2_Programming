@@ -1,16 +1,60 @@
-class BipGraph:
-    def __init__(self, left, right):
-        self.left = left  # вершины слева
-        self.right = right  # вершины справа
-        self.adjacent = [[] for i in range(right+1)]  # пары для левых вершин
- 
-    def addEdge(self, u, v):
-        self.adjacent[u].append(v) 
- 
-    def bfs(self):  # если есть добавочный путь, то истина, иначе ложь
+class BiGraph:
+    def __init__(self, arr, marking):
+        self.graph = arr
+        self.n = len(arr)
+        self.marking = marking
+    
+    def dfs_ford_fulk(self, left, mathes_for_right, checked, right_vert):
+        for right in right_vert:  # подбираем пару, проверяя все правые вершины
+            if self.graph[left][right] and not checked[right]:  # если есть путь и эту правую вершину ещё не проверяли
+                checked[right] = True  # то помечаем её как проверенную
+                
+                # Если этой правой вершине ещё не назначена пара, то теперь левая ей будет
+                # Однако, может возникнуть ситуация, что этой правой вершине уже назначена какая-нибудь
+                # левая вершина, которая в свою очередь может ещё иметь другую пару. Для этого и нужно второе условие, оно проверит, возможно ли для сей левой вершины найти другую пару и если да, то так и делаем
+                if mathes_for_right[right] == -1 or self.dfs_ford_fulk(mathes_for_right[right], mathes_for_right, checked, right_vert):
+                    mathes_for_right[right] = left
+                    return True
+        return False
+
+    def ford_fulkerson(self):
+        left_vert, right_vert = [], []
+        self.max_bipart = 0
+
+        for i in range(self.n):
+            if self.marking[i] == 1:
+                right_vert.append(i)
+            elif self.marking[i] == 2:
+                left_vert.append(i)
+
+        mathes_for_right = [-1 for i in range(self.n)]  # пары для правых вершин
+
+        for i in left_vert:
+            checked = [False for j in range(self.n)]  # изначально для левой вершины пока не проверена ни одна правая
+
+            if self.dfs_ford_fulk(i, mathes_for_right, checked, right_vert):
+                self.max_bipart += 1
+
+        return self.max_bipart
+
+    def dfs_hopc_karp(self, u):
+        if u != 0:
+            for v in self.adjacent[u]:
+                if self.distance[self.pair_for_right[v]] == self.distance[u] + 1:
+                    if self.dfs_hopc_karp(self.pair_for_right[v]):
+                        self.pair_for_right[v] = u
+                        self.pair_for_left[u] = v
+                        return True
+
+            self.distance[u] = float("inf")
+            return False
+
+        return True
+
+    def bfs_hopc_karp(self):  # если есть добавочный путь, то истина, иначе ложь
         queue = []
 
-        for u in range(1, self.left+1):
+        for u in range(1, self.left_count+1):
             if self.pair_for_left[u] == 0:
                 self.distance[u] = 0
                 queue.append(u)
@@ -30,90 +74,26 @@ class BipGraph:
                         queue.append(self.pair_for_right[v])
 
         return self.distance[0] != float("inf")
- 
-    def dfs(self, u):
-        if u != 0:
-            for v in self.adjacent[u]:
-                if self.distance[self.pair_for_right[v]] == self.distance[u] + 1:
-                    if self.dfs(self.pair_for_right[v]):
-                        self.pair_for_right[v] = u
-                        self.pair_for_left[u] = v
-                        return True
 
-            self.distance[u] = float("inf")
-            return False
-
-        return True
- 
-    def hopcroftKarp(self):
-        self.pair_for_left = [0 for _ in range(self.left+1)]  # пара для каждой вершины слева
-        self.pair_for_right = [0 for _ in range(self.right+1)]  # пара для каждой вершины справа
-        self.distance = [0 for _ in range(self.left+1)]  # расстояния для левых вершин
-        result = 0
- 
-        while self.bfs():
-            for u in range(1, self.left+1):
-                if self.pair_for_left[u] == 0 and self.dfs(u):
-                    result += 1
-
-        return result
- 
-
-class Flow:  # скопировано из 8 лабы с нужными изменениями
-    def __init__(self, arr, marking):
-        self.graph = arr
-        self.n = len(arr)
-        self.marking = marking
-    
-    def dfs(self, left, mathes_for_right, checked, right_vert):
-        for right in right_vert:  # подбираем пару, проверяя все правые вершины
-            if self.graph[left][right] and not checked[right]:  # если есть путь и эту правую вершину ещё не проверяли
-                checked[right] = True  # то помечаем её как проверенную
-                
-                # Если этой правой вершине ещё не назначена пара, то теперь левая ей будет
-                # Однако, может возникнуть ситуация, что этой правой вершине уже назначена какая-нибудь
-                # левая вершина, которая в свою очередь может ещё иметь другую пару. Для этого и нужно второе условие, оно проверит, возможно ли для сей левой вершины найти другую пару и если да, то так и делаем
-                if mathes_for_right[right] == -1 or self.dfs(mathes_for_right[right], mathes_for_right, checked, right_vert):
-                    mathes_for_right[right] = left
-                    return True
-        return False
-
-
-    def ford_fulkerson(self):
-        left_vert, right_vert = [], []
-        self.max_bipart = 0
-
-        for i in range(self.n):
-            if self.marking[i] == 1:
-                right_vert.append(i)
-            elif self.marking[i] == 2:
-                left_vert.append(i)
-
-        mathes_for_right = [-1 for i in range(self.n)]  # пары для правых вершин
-
-        print(len(left_vert), len(right_vert))
-
-        for i in left_vert:
-            checked = [False for j in range(self.n)]  # изначально для левой вершины пока не проверена ни одна правая
-
-            if self.dfs(i, mathes_for_right, checked, right_vert):
-                self.max_bipart += 1
-
-        return self.max_bipart
+    def add_edge(self, u, v):
+        self.adjacent[u].append(v) 
 
     def hopcroft_karp(self):
         self.max_bipart = 0
-        left_count, right_count = 0, 0
+        self.left_count, self.right_count = 0, 0
+        left_vert, right_vert = 0, 0
 
         for i in self.marking:
             if i == 2:
-                left_count += 1
+                self.left_count += 1
             elif i == 1:
-                right_count += 1
+                self.right_count += 1
 
-        bi_graph = BipGraph(left_count, right_count)
-        
-        left_vert, right_vert = 0, 0
+        self.adjacent = [[] for i in range(self.right_count+1)]  # соседний правые для левых вершин
+        self.pair_for_left = [0 for _ in range(self.left_count+1)]  # пара для каждой вершины слева
+        self.pair_for_right = [0 for _ in range(self.right_count+1)]  # пара для каждой вершины справа
+        self.distance = [0 for _ in range(self.left_count+1)]  # расстояния для левых вершин
+
         for i in range(self.n):
             if self.marking[i] == 2:
                 left_vert += 1
@@ -122,11 +102,14 @@ class Flow:  # скопировано из 8 лабы с нужными изме
                 if self.marking[j] == 1:
                     right_vert += 1
                 if self.graph[i][j]:
-                    bi_graph.addEdge(left_vert, right_vert)
+                    self.add_edge(left_vert, right_vert)
 
             right_vert = 0
 
-        self.max_bipart = bi_graph.hopcroftKarp()
+        while self.bfs_hopc_karp():
+            for u in range(1, self.left_count+1):
+                if self.pair_for_left[u] == 0 and self.dfs_hopc_karp(u):
+                    self.max_bipart += 1
 
         return self.max_bipart
 
@@ -192,7 +175,7 @@ def main():
                     print(f"    {i} --- {j}")
                     graph[j][i] = 0
 
-    flow = Flow(graph, marking)
+    flow = BiGraph(graph, marking)
 
     print("\nМаксимальное паросочетание алгоритмом Форда-Фулкерсона:", flow.ford_fulkerson())
 
