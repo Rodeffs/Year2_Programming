@@ -34,6 +34,11 @@ class BiGraph:
 
             if self.dfs_ford_fulk(i, mathes_for_right, checked, right_vert):
                 self.max_bipart += 1
+        
+        print("\nМаксимальное паросочетание:")
+        for i in range(self.n):
+            if mathes_for_right[i] != -1:
+                print(f"    {mathes_for_right[i] + 1} --- {i + 1}")
 
         return self.max_bipart
 
@@ -172,7 +177,7 @@ def main():
         if marking[i] == 2:
             for j in range(n):
                 if graph[i][j]:
-                    print(f"    {i} --- {j}")
+                    print(f"    {i + 1} --- {j + 1}")
                     graph[j][i] = 0
 
     flow = BiGraph(graph, marking)
