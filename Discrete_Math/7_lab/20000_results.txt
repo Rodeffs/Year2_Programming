@@ -1,0 +1,3 @@
+Graph degree: 55.6795
+Dijkstra algorithm iterations count: 201125598
+Bellman-Ford algorithm iterations count: 22271800000
